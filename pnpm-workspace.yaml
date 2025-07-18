@@ -1,5 +1,5 @@
 onlyBuiltDependencies:
-  - eslint-config-prettier
-  - eslint-plugin-prettier
-  - napi-postinstall
-  - unrs-resolver
+    - eslint-config-prettier
+    - eslint-plugin-prettier
+    - napi-postinstall
+    - unrs-resolver

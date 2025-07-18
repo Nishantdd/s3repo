@@ -1,10 +1,9 @@
-import Login from "@/components/Login";
-import Image from "next/image";
+import Login from '@/components/Login';
 
 export default function Home() {
-  return (
-    <div className="flex items-center justify-center">
-        <Login />
-    </div>
-  );
+    return (
+        <div className="flex items-center justify-center">
+            <Login />
+        </div>
+    );
 }

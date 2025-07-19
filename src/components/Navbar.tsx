@@ -2,8 +2,14 @@ import { User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import Image from 'next/image';
+import { GroupSelector } from './GroupSelector';
 
-export function Navbar() {
+interface NavbarProps {
+    groups: string[];
+    onGroupSelect: (group: string) => void;
+}
+
+export function Navbar({ groups, onGroupSelect }: NavbarProps) {
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
             <div className="flex h-14 items-center px-4">
@@ -11,6 +17,8 @@ export function Navbar() {
                     <Image src="/s3repo.png" width={32} height={32} draggable="false" alt="Logo" />
                     <h1 className="text-lg font-semibold">S3Repo</h1>
                 </div>
+
+                <GroupSelector groups={groups} onGroupSelect={onGroupSelect} />
 
                 <div className="ml-auto flex items-center space-x-4">
                     <SidebarTrigger />

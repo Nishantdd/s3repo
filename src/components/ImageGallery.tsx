@@ -3,17 +3,22 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import ImageData from '@/types/imageData';
+import GroupData from '@/types/groupData';
 
 interface ImageGalleryProps {
-    images: ImageData[];
+    groupData: GroupData | undefined;
     selectedImage: ImageData;
     onImageSelect: (image: ImageData) => void;
 }
 
-export function ImageGallery({ images, selectedImage, onImageSelect }: ImageGalleryProps) {
+export function ImageGallery({ groupData, selectedImage, onImageSelect }: ImageGalleryProps) {
+    if (!groupData) {
+        return <div>No images to display</div>;
+    }
+
     return (
         <div className="grid auto-rows-[200px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {images.map((image, index) => (
+            {groupData.images.map((image, index) => (
                 <div
                     key={image.id}
                     className={cn(

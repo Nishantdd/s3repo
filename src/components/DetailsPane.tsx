@@ -12,15 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-
-interface ImageData {
-    id: number;
-    src: string;
-    name: string;
-    size: string;
-    created: string;
-    updated: string;
-}
+import ImageData from '@/types/imageData';
 
 interface DetailsPaneProps {
     selectedImage: ImageData;

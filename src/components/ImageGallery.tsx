@@ -2,15 +2,7 @@
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-
-interface ImageData {
-    id: number;
-    src: string;
-    name: string;
-    size: string;
-    created: string;
-    updated: string;
-}
+import ImageData from '@/types/imageData';
 
 interface ImageGalleryProps {
     images: ImageData[];

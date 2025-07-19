@@ -28,7 +28,7 @@ interface DetailsPaneProps {
 
 export function DetailsPane({ selectedImage }: DetailsPaneProps) {
     return (
-        <Sidebar side="right" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
+        <Sidebar side="left" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
             <SidebarHeader className="p-4">
                 <h2 className="text-lg font-semibold">Image Details</h2>
             </SidebarHeader>

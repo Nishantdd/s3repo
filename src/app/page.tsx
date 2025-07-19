@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
 import { ImageGallery } from '@/components/ImageGallery';
@@ -78,19 +78,25 @@ export default function HomePage() {
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">
-            <SidebarProvider defaultOpen={true} className="flex flex-col">
+            <SidebarProvider
+                defaultOpen={true}
+                className="flex flex-col"
+                style={
+                    {
+                        '--sidebar-width': '20rem',
+                        '--sidebar-width-mobile': '18rem'
+                    } as React.CSSProperties
+                }>
                 <Navbar />
                 <div className="flex flex-1">
                     <DetailsPane selectedImage={selectedImage} />
-                    <SidebarInset>
-                        <main className="flex-1 overflow-auto p-6">
-                            <ImageGallery
-                                images={sampleImages}
-                                selectedImage={selectedImage}
-                                onImageSelect={setSelectedImage}
-                            />
-                        </main>{' '}
-                    </SidebarInset>
+                    <main className="flex-1 overflow-auto p-6">
+                        <ImageGallery
+                            images={sampleImages}
+                            selectedImage={selectedImage}
+                            onImageSelect={setSelectedImage}
+                        />
+                    </main>
                 </div>
             </SidebarProvider>
         </div>

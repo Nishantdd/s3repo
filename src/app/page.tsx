@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
 import { ImageGallery } from '@/components/ImageGallery';
@@ -77,20 +77,22 @@ export default function HomePage() {
     const [selectedImage, setSelectedImage] = useState(sampleImages[0]);
 
     return (
-        <SidebarProvider defaultOpen={true}>
-            <div className="flex min-h-screen w-full">
-                <div className="flex flex-1 flex-col">
-                    <Navbar />
-                    <main className="flex-1 p-6">
-                        <ImageGallery
-                            images={sampleImages}
-                            selectedImage={selectedImage}
-                            onImageSelect={setSelectedImage}
-                        />
-                    </main>
+        <div className="[--header-height:calc(--spacing(14))]">
+            <SidebarProvider defaultOpen={true} className="flex flex-col">
+                <Navbar />
+                <div className="flex flex-1">
+                    <DetailsPane selectedImage={selectedImage} />
+                    <SidebarInset>
+                        <main className="flex-1 overflow-auto p-6">
+                            <ImageGallery
+                                images={sampleImages}
+                                selectedImage={selectedImage}
+                                onImageSelect={setSelectedImage}
+                            />
+                        </main>{' '}
+                    </SidebarInset>
                 </div>
-                <DetailsPane selectedImage={selectedImage} />
-            </div>
-        </SidebarProvider>
+            </SidebarProvider>
+        </div>
     );
 }

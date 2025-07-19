@@ -4,7 +4,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export function Navbar() {
     return (
-        <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b backdrop-blur">
+        <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
             <div className="flex h-14 items-center px-4">
                 <div className="flex items-center space-x-4">
                     <Button variant="ghost" size="icon" className="md:hidden">

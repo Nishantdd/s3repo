@@ -23,7 +23,7 @@ export function Navbar({ groups, onGroupSelect }: NavbarProps) {
                 <div className="ml-auto flex items-center space-x-2">
                     <SidebarTrigger />
                     <Button variant="ghost" size="icon">
-                        <Plus className='h-5 w-5' />
+                        <Plus className="h-5 w-5" />
                     </Button>
                     <Button variant="ghost" size="icon">
                         <User className="h-5 w-5" />

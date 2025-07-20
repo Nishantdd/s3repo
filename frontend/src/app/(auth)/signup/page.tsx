@@ -21,7 +21,7 @@ export default function Login() {
 
         const name = email.includes('.') ? email.split('.')[0] : email.split('@')[0];
 
-        const { data, error } = await authClient.signUp.email(
+        await authClient.signUp.email(
             {
                 email: email,
                 password: password,
@@ -33,7 +33,7 @@ export default function Login() {
                 },
                 onSuccess: () => {
                     setLoading(false);
-                    redirect('/');
+                    redirect('/dashboard');
                 },
                 onError: ctx => {
                     setLoading(false);

@@ -15,14 +15,13 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { data, error } = await authClient.signIn.email(
+        await authClient.signIn.email(
             {
                 email: email,
                 password: password,
-                callbackURL: '/',
+                callbackURL: '/dashboard',
                 rememberMe: true
             },
-
             {
                 onRequest: () => {
                     setLoading(true);

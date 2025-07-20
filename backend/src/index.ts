@@ -1,15 +1,24 @@
-import fastify from 'fastify';
-const server = fastify();
+import Fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
+import authRoutes from './routes/auth.js';
 
-server.get('/', function (request, reply) {
-    reply.send({ hello: 'world' });
+const PORT = 8000;
+const fastify = Fastify({ logger: false });
+
+fastify.register(fastifyCors, {
+    origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    maxAge: 86400
 });
 
-server.listen({ port: 8000 }, function (err, address) {
+fastify.register(authRoutes);
+
+fastify.listen({ port: PORT }, err => {
     if (err) {
-        server.log.error(err);
+        fastify.log.error(err);
         process.exit(1);
     }
-
-    console.log(`Server is now listening on: ${address}`);
+    console.log(`Server running on port ${PORT}`);
 });

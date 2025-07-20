@@ -21,13 +21,13 @@ interface DetailsPaneProps {
 export function DetailsPane({ selectedImage }: DetailsPaneProps) {
     return (
         <Sidebar side="left" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
-            <SidebarHeader className="p-4">
+            <SidebarHeader className="p-4 pb-0">
                 <h2 className="text-lg font-semibold">Image Details</h2>
             </SidebarHeader>
 
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupContent className="space-y-4 p-4">
+                    <SidebarGroupContent className="space-y-4 p-4 pt-2">
                         <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
                             <Image
                                 src={selectedImage.src || '/placeholder.svg'}

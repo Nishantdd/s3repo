@@ -1,4 +1,4 @@
-import { User } from 'lucide-react';
+import { Plus, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import Image from 'next/image';
@@ -20,8 +20,11 @@ export function Navbar({ groups, onGroupSelect }: NavbarProps) {
 
                 <GroupSelector groups={groups} onGroupSelect={onGroupSelect} />
 
-                <div className="ml-auto flex items-center space-x-4">
+                <div className="ml-auto flex items-center space-x-2">
                     <SidebarTrigger />
+                    <Button variant="ghost" size="icon">
+                        <Plus className='h-5 w-5' />
+                    </Button>
                     <Button variant="ghost" size="icon">
                         <User className="h-5 w-5" />
                         <span className="sr-only">User profile</span>

@@ -6,6 +6,9 @@ import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
 import { ImageGallery } from '@/components/ImageGallery';
 import GroupData from '@/types/groupData';
+import { authClient } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
+import { Loading } from '@/components/Loading';
 
 const sampleGroupData: GroupData[] = [
     {
@@ -79,6 +82,11 @@ const sampleGroupData: GroupData[] = [
 export default function HomePage() {
     const [selectedImage, setSelectedImage] = useState(sampleGroupData[0]['images'][0]);
     const [selectedGroup, setSelectedGroup] = useState('');
+
+    const { data: session, isPending, error } = authClient.useSession();
+
+    if (isPending) return <Loading />;
+    if (!session || error) return redirect('/login');
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">

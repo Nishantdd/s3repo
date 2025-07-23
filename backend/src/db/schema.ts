@@ -8,6 +8,10 @@ export const user = pgTable('user', {
         .$defaultFn(() => false)
         .notNull(),
     image: text('image'),
+    bucketName: text('bucket_name'),
+    bucketRegion: text('bucket_region'),
+    accessKey: text('access_key'),
+    secretAccessKey: text('secret_access_key'),
     createdAt: timestamp('created_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
         .notNull(),

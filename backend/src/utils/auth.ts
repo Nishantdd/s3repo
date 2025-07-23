@@ -1,4 +1,5 @@
 import { betterAuth } from 'better-auth';
+import { customSession } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db/drizzle.js';
 import { schema } from '../db/schema.js';
@@ -11,5 +12,32 @@ export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: 'pg',
         schema: schema
-    })
+    }),
+    plugins: [
+        customSession(async ({ user, session }) => {
+            const fullUser = await db.query.user.findFirst({
+                where: (users, { eq }) => eq(users.id, user.id)
+            });
+
+            if (!fullUser) {
+                return { user, session };
+            }
+
+            const decryptedSecretAccessKey = fullUser.secretAccessKey;
+            const accessKey = fullUser.accessKey;
+            const bucketName = fullUser.bucketName;
+            const bucketRegion = fullUser.bucketRegion;
+
+            return {
+                user: {
+                    ...user,
+                    accessKey,
+                    decryptedSecretAccessKey,
+                    bucketName,
+                    bucketRegion
+                },
+                session
+            };
+        })
+    ]
 });

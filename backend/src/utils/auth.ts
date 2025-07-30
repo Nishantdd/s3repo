@@ -1,4 +1,4 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, BetterAuthOptions } from 'better-auth';
 import { customSession } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db/drizzle.js';
@@ -19,14 +19,10 @@ export const auth = betterAuth({
                 where: (users, { eq }) => eq(users.id, user.id)
             });
 
-            if (!fullUser) {
-                return { user, session };
-            }
-
-            const decryptedSecretAccessKey = fullUser.secretAccessKey;
-            const accessKey = fullUser.accessKey;
-            const bucketName = fullUser.bucketName;
-            const bucketRegion = fullUser.bucketRegion;
+            const decryptedSecretAccessKey = fullUser?.secretAccessKey || '';
+            const accessKey = fullUser?.accessKey || '';
+            const bucketName = fullUser?.bucketName || '';
+            const bucketRegion = fullUser?.bucketRegion || '';
 
             return {
                 user: {

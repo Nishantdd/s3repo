@@ -8,6 +8,29 @@ import { eq } from 'drizzle-orm';
 
 const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
     fastify.route({
+        method: 'GET',
+        url: '/get-s3-credentials',
+        handler: async (request, reply) => {
+            const body = request.body;
+
+            // Authenticate userId
+            const session = await auth.api.getSession({
+                headers: new Headers(Object.entries(request.headers) as [string, string][])
+            });
+            if (!session) return reply.status(401).send({ error: 'User not authenticated' });
+
+            // Get s3 credentials from user session
+            const result = {
+                bucketName: session.user.bucketName,
+                bucketRegion: session.user.bucketRegion,
+                accessKey: session.user.accessKey,
+                secretAccessKey: session.user.decryptedSecretAccessKey
+            };
+            reply.status(200).send({ message: 'S3 credentials fetched successfully', data: result });
+        }
+    });
+
+    fastify.route({
         method: 'PATCH',
         url: '/update-s3-credentials',
         schema: updateS3CredentialsValidation,
@@ -22,7 +45,6 @@ const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
 
             // Update s3 credentials in db
             const userId = session.user.id;
-
             try {
                 const result = await db
                     .update(user)

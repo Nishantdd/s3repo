@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +26,24 @@ export default function AccountPage() {
     });
 
     const [currentValues, setCurrentValues] = useState<S3Credentials>({ ...originalValues });
+
+    useEffect(() => {
+        const fetchS3Credentials = async () => {
+            await fetch(`http://localhost:8000/get-s3-credentials`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            })
+                .then(res => res.json())
+                .then(res => setOriginalValues(res.data))
+                .catch(err => console.error(err.message));
+        };
+
+        fetchS3Credentials();
+    }, []);
+
+    useEffect(() => setCurrentValues(originalValues), [originalValues]);
+
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const [editStates, setEditStates] = useState({
@@ -68,21 +86,15 @@ export default function AccountPage() {
     };
 
     const handleSave = async (field: keyof S3Credentials) => {
-        try {
             await fetch(`http://localhost:8000/update-s3-credentials`, {
                 method: 'PATCH',
-                headers: {"Content-Type": "application/json"},
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({ ...currentValues })
             })
-
-            setOriginalValues(prev => ({
-                ...prev,
-                [field]: currentValues[field]
-            }));
-        } catch (error) {
-            console.error(`Error saving ${field}:`, error);
-        }
+                .then(res => res.json())
+                .then(res => setOriginalValues(res.data))
+                .catch(err => console.error(`Error saving ${field}: `, err.message));
     };
 
     const handleLogout = async (e: React.FormEvent) => {

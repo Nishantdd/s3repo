@@ -89,9 +89,7 @@ export default function HomePage() {
                         </main>
                     </div>
                 ) : (
-                    <div className='flex flex-1 items-center justify-center'>
-                        Please select a group
-                    </div>
+                    <div className="flex flex-1 items-center justify-center">Please select a group</div>
                 )}
             </SidebarProvider>
         </div>

@@ -42,7 +42,7 @@ export function GroupSelector({ groups, onGroupSelect }: GroupSelectorProps) {
                                         value={group}
                                         onSelect={currentValue => {
                                             onGroupSelect(index);
-                                            setValue(currentValue === value ? '' : currentValue);
+                                            setValue(currentValue);
                                             setOpen(false);
                                         }}>
                                         {group}

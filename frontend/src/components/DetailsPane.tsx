@@ -15,10 +15,13 @@ import Image from 'next/image';
 import ImageData from '@/types/imageData';
 
 interface DetailsPaneProps {
-    selectedImage: ImageData;
+    selectedImage: ImageData | undefined;
 }
 
 export function DetailsPane({ selectedImage }: DetailsPaneProps) {
+    if (!selectedImage)
+        return <p className="text-muted-foreground text-center text-xs">Select an image to view details</p>;
+
     return (
         <Sidebar side="left" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
             <SidebarHeader className="p-4 pb-0">

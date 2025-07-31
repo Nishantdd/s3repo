@@ -1,6 +1,6 @@
-import { Type } from '@fastify/type-provider-typebox';
+import { Type, Static } from '@fastify/type-provider-typebox';
 
-const S3Credentials = Type.Object({
+const S3CredentialsSchema = Type.Object({
     accessKey: Type.String({ minLength: 1 }),
     secretAccessKey: Type.String({ minLength: 1 }),
     bucketName: Type.String({ minLength: 1 }),
@@ -9,7 +9,7 @@ const S3Credentials = Type.Object({
 
 export const fileUploadValidation = {
     body: Type.Intersect([
-        S3Credentials,
+        S3CredentialsSchema,
         Type.Object({
             filename: Type.String({ minLength: 3 })
         })
@@ -17,5 +17,7 @@ export const fileUploadValidation = {
 };
 
 export const updateS3CredentialsValidation = {
-    body: S3Credentials
+    body: S3CredentialsSchema
 };
+
+export type S3Credentials = Static<typeof S3CredentialsSchema>;

@@ -13,7 +13,7 @@ const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
         handler: async (request, reply) => {
             const body = request.body;
 
-            // Authenticate userId
+            // Authenticate user
             const session = await auth.api.getSession({
                 headers: new Headers(Object.entries(request.headers) as [string, string][])
             });

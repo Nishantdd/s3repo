@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
+import imageRoutes from './routes/image.route.js';
 
 const PORT = 8000;
 const fastify = Fastify({ logger: false });
@@ -18,6 +19,7 @@ fastify.register(fastifyCors, {
 // Register routes
 fastify.register(authRoutes);
 fastify.register(userRoutes);
+fastify.register(imageRoutes);
 
 // Error handling for type box validations
 fastify.setErrorHandler((error, request, reply) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
@@ -9,6 +9,8 @@ import GroupData from '@/types/groupData';
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 import { Loading } from '@/components/Loading';
+import Account from '@/components/Account';
+import S3Credentials from '@/types/s3Credentials';
 
 const sampleGroupData: GroupData[] = [
     {
@@ -82,11 +84,37 @@ const sampleGroupData: GroupData[] = [
 export default function HomePage() {
     const [selectedImage, setSelectedImage] = useState(sampleGroupData[0]['images'][0]);
     const [selectedGroup, setSelectedGroup] = useState('');
+    const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const [s3Credentials, setS3Credentials] = useState<S3Credentials>({
+        accessKey: '',
+        bucketName: '',
+        bucketRegion: '',
+        secretAccessKey: ''
+    });
+
+    useEffect(() => {
+        const fetchS3Credentials = async () => {
+            await fetch(`http://localhost:8000/get-s3-credentials`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                cache: 'force-cache',
+                next: { revalidate: 600 }
+            })
+                .then(res => res.json())
+                .then(res => setS3Credentials(res.data))
+                .catch(err => console.error(err.message));
+        };
+
+        fetchS3Credentials();
+    }, []);
 
     const { data: session, isPending, error } = authClient.useSession();
 
     if (isPending) return <Loading />;
     if (!session || error) return redirect('/login');
+
+    if (isAccountOpen) return <Account s3Credentials={s3Credentials} setIsAccountOpen={setIsAccountOpen} />;
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">
@@ -99,7 +127,11 @@ export default function HomePage() {
                         '--sidebar-width-mobile': '18rem'
                     } as React.CSSProperties
                 }>
-                <Navbar groups={sampleGroupData.map(groupData => groupData.name)} onGroupSelect={setSelectedGroup} />
+                <Navbar
+                    setIsAccountOpen={setIsAccountOpen}
+                    groups={sampleGroupData.map(groupData => groupData.name)}
+                    onGroupSelect={setSelectedGroup}
+                />
                 <div className="flex flex-1">
                     <DetailsPane selectedImage={selectedImage} />
                     <main className="flex-1 overflow-auto p-6">

@@ -3,16 +3,15 @@ import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { GroupSelector } from './GroupSelector';
-import { useRouter } from 'next/navigation';
+import { Dispatch, SetStateAction } from 'react';
 
 interface NavbarProps {
     groups: string[];
     onGroupSelect: (group: string) => void;
+    setIsAccountOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Navbar({ groups, onGroupSelect }: NavbarProps) {
-    const router = useRouter();
-
+export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps) {
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
             <div className="flex h-14 items-center px-4">
@@ -28,7 +27,7 @@ export function Navbar({ groups, onGroupSelect }: NavbarProps) {
                     <Button variant="ghost" size="icon">
                         <Plus className="h-5 w-5" />
                     </Button>
-                    <Button onClick={() => router.push('/account')} variant="ghost" size="icon">
+                    <Button onClick={() => setIsAccountOpen(prev => !prev)} variant="ghost" size="icon">
                         <User className="h-5 w-5" />
                         <span className="sr-only">User profile</span>
                     </Button>

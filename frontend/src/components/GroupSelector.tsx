@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 interface GroupSelectorProps {
     groups: string[];
-    onGroupSelect: (group: string) => void;
+    onGroupSelect: (groupIndex: number) => void;
 }
 
 export function GroupSelector({ groups, onGroupSelect }: GroupSelectorProps) {
@@ -36,12 +36,12 @@ export function GroupSelector({ groups, onGroupSelect }: GroupSelectorProps) {
                         <CommandList>
                             <CommandEmpty>No group found.</CommandEmpty>
                             <CommandGroup>
-                                {groups.map(group => (
+                                {groups.map((group, index) => (
                                     <CommandItem
                                         key={group}
                                         value={group}
                                         onSelect={currentValue => {
-                                            onGroupSelect(currentValue);
+                                            onGroupSelect(index);
                                             setValue(currentValue === value ? '' : currentValue);
                                             setOpen(false);
                                         }}>

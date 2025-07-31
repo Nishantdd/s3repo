@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 interface NavbarProps {
     groups: string[];
-    onGroupSelect: (group: string) => void;
+    onGroupSelect: (groupIndex: number) => void;
     setIsAccountOpen: Dispatch<SetStateAction<boolean>>;
 }
 

@@ -15,9 +15,9 @@ import ImageData from '@/types/imageData';
 
 export default function HomePage() {
     const [groupsData, setGroupsData] = useState<GroupData[]>([]);
-    const [selectedImage, setSelectedImage] = useState<ImageData>();
-    const [selectedGroup, setSelectedGroup] = useState('');
-    const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<ImageData | undefined>();
+    const [selectedGroup, setSelectedGroup] = useState<GroupData | undefined>();
+    const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
     const [s3Credentials, setS3Credentials] = useState<S3Credentials>({
         accessKey: '',
         bucketName: '',
@@ -54,7 +54,6 @@ export default function HomePage() {
     }, []);
 
     const { data: session, isPending, error } = authClient.useSession();
-
     if (isPending) return <Loading />;
     if (!session || error) return redirect('/login');
 
@@ -74,18 +73,26 @@ export default function HomePage() {
                 <Navbar
                     setIsAccountOpen={setIsAccountOpen}
                     groups={groupsData.map(groupData => groupData.name)}
-                    onGroupSelect={setSelectedGroup}
+                    onGroupSelect={(groupIndex: number) => {
+                        setSelectedGroup(groupsData[groupIndex]);
+                    }}
                 />
-                <div className="flex flex-1">
-                    <DetailsPane selectedImage={selectedImage} />
-                    <main className="flex-1 overflow-auto p-6">
-                        <ImageGallery
-                            groupData={groupsData.find(groupData => groupData.name === selectedGroup)}
-                            selectedImage={selectedImage}
-                            onImageSelect={setSelectedImage}
-                        />
-                    </main>
-                </div>
+                {selectedGroup ? (
+                    <div className="flex flex-1">
+                        <DetailsPane selectedGroup={selectedGroup} selectedImage={selectedImage} />
+                        <main className="flex-1 overflow-auto p-6">
+                            <ImageGallery
+                                groupData={selectedGroup}
+                                selectedImage={selectedImage}
+                                onImageSelect={setSelectedImage}
+                            />
+                        </main>
+                    </div>
+                ) : (
+                    <div className='flex flex-1 items-center justify-center'>
+                        Please select a group
+                    </div>
+                )}
             </SidebarProvider>
         </div>
     );

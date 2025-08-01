@@ -84,7 +84,9 @@ export default function HomePage() {
                             <ImageGallery
                                 groupData={selectedGroup}
                                 selectedImage={selectedImage}
-                                onImageSelect={setSelectedImage}
+                                onImageSelect={(image: ImageData) =>
+                                    setSelectedImage(image === selectedImage ? undefined : image)
+                                }
                             />
                         </main>
                     </div>

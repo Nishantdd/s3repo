@@ -49,6 +49,22 @@ const formatBytes = (bytes: number, decimals = 2): string => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
+function formatDate(isoString: string, locale: string | undefined = undefined): string {
+    const date = new Date(isoString);
+
+    if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+
+    return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
 export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) {
     if (selectedImage) {
         return (
@@ -86,12 +102,12 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                     <div className="flex items-center gap-2 text-sm">
                                         <Calendar className="text-muted-foreground h-4 w-4" />
                                         <span className="text-muted-foreground">Created:</span>
-                                        <span>{selectedImage.created}</span>
+                                        <span>{formatDate(selectedImage.created)}</span>
                                     </div>
                                     <div className="flex items-center gap-2 text-sm">
                                         <Calendar className="text-muted-foreground h-4 w-4" />
                                         <span className="text-muted-foreground">Updated:</span>
-                                        <span>{selectedImage.updated}</span>
+                                        <span>{formatDate(selectedImage.updated)}</span>
                                     </div>
                                 </div>
                             </div>

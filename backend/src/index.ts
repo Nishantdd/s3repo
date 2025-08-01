@@ -3,13 +3,14 @@ import fastifyCors from '@fastify/cors';
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
 import imageRoutes from './routes/image.route.js';
+import { config } from './utils/config.js';
 
 const PORT = 8000;
 const fastify = Fastify({ logger: false });
 
 // Cross Origin Resource Sharing
 fastify.register(fastifyCors, {
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+    origin: config.CLIENT_ORIGIN || 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,

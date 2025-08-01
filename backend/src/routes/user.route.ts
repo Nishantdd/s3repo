@@ -84,7 +84,7 @@ const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
             if (!session) return reply.status(401).send({ error: 'User not authenticated' });
 
             // Get signed url for uploading file
-            const url = await getPutObjectSigned({ ...body });
+            const url = await getPutObjectSigned({ ...body }, body.filename);
             if (!url) return reply.status(500).send({ error: `Couldn't upload file: ${body.filename}` });
 
             return reply.status(200).send({ message: 'Upload url created', data: url });

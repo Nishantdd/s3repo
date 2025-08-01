@@ -2,6 +2,7 @@ import { PutObjectCommand, S3Client, ListObjectsV2Command, GetObjectCommand, _Ob
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Credentials } from '../types/user.schema.js';
 import { ImageDetails } from '../types/image.schema.js';
+import { config } from './config.js';
 
 /**
  * Helper to format file size from bytes to a readable string.
@@ -49,6 +50,42 @@ export const listFoldersInBucket = async (credentials: S3Credentials): Promise<s
     const response = await s3Client.send(command);
     // Extracts the folder names from the CommonPrefixes array and removes the trailing '/'
     return response.CommonPrefixes?.map(prefix => prefix.Prefix!.slice(0, -1)) || [];
+};
+
+/**
+ * Generates cloudfront cdn url for all images within a specific folder.
+ * @param credentials - The user's S3 access credentials.
+ * @param folderName - The name of the folder to retrieve images from.
+ * @returns A promise that resolves to an array of image details.
+ */
+export const getCloudfrontImagesUrlFromFolder = async (
+    credentials: S3Credentials,
+    folderName: string
+): Promise<ImageDetails[]> => {
+    const s3Client = getS3Client(credentials);
+    const command = new ListObjectsV2Command({
+        Bucket: credentials.bucketName,
+        Prefix: `${folderName}/`
+    });
+
+    const { Contents } = await s3Client.send(command);
+    if (!Contents) return [];
+
+    // Filter out the folder placeholder object itself, which has a size of 0.
+    const imageObjects = Contents.filter(obj => obj.Size && obj.Size > 0);
+
+    const cdnImagePromises = imageObjects.map(async (obj: _Object) => {
+        return {
+            id: obj.ETag!.replace(/"/g, ''), // Use the object's ETag as a unique ID
+            src: `${config.CLOUDFRONT_DOMAIN_URL}/${obj.Key}`,
+            name: obj.Key!.split('/').pop()!,
+            size: formatBytes(obj.Size!),
+            created: obj.LastModified!.toISOString(),
+            updated: obj.LastModified!.toISOString() // S3 only provides LastModified
+        };
+    });
+
+    return Promise.all(cdnImagePromises);
 };
 
 /**

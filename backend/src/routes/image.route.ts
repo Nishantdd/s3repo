@@ -1,7 +1,6 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { Static, Type } from '@fastify/type-provider-typebox';
 import { auth } from '../utils/auth.js';
-import { listFoldersInBucket, getSignedImagesUrlFromFolder } from '../utils/s3.js';
+import { listFoldersInBucket, getCloudfrontImagesUrlFromFolder } from '../utils/s3.js';
 import { S3Credentials } from '../types/user.schema.js';
 import { getImagesFromGroupNameValidator, GroupData } from '../types/image.schema.js';
 
@@ -35,7 +34,7 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
 
                 // Concurrently fetch images for each folder
                 const groupDataPromises = folderNames.map(async (name): Promise<GroupData> => {
-                    const images = await getSignedImagesUrlFromFolder(credentials, name);
+                    const images = await getCloudfrontImagesUrlFromFolder(credentials, name);
                     return { name, images };
                 });
 
@@ -79,7 +78,7 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
 
             try {
                 // Fetch images only for the specified group
-                const images = await getSignedImagesUrlFromFolder(credentials, groupName);
+                const images = await getCloudfrontImagesUrlFromFolder(credentials, groupName);
                 reply
                     .status(200)
                     .send({ message: `Images for group '${groupName}' fetched successfully`, data: images });

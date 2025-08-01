@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 's3repo-drive.s3.ap-south-1.amazonaws.com',
+                hostname: '*.cloudfront.net',
                 pathname: '/**',
                 port: ''
             }

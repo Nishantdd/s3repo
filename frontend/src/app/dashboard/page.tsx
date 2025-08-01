@@ -27,7 +27,7 @@ export default function HomePage() {
 
     useEffect(() => {
         const fetchS3Credentials = async () => {
-            await fetch(`http://localhost:8000/get-s3-credentials`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/get-s3-credentials`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -40,7 +40,7 @@ export default function HomePage() {
         };
 
         const getGroupsList = async () => {
-            await fetch(`http://localhost:8000/groups`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/groups`, {
                 method: 'GET',
                 credentials: 'include'
             })

@@ -57,7 +57,7 @@ export default function Account({
     };
 
     const handleSave = async (field: keyof S3Credentials) => {
-        await fetch(`http://localhost:8000/update-s3-credentials`, {
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/update-s3-credentials`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

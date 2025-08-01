@@ -118,10 +118,17 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                         <SidebarGroupLabel>Actions</SidebarGroupLabel>
                         <SidebarGroupContent className="p-4">
                             <div className="grid gap-2">
-                                <Button variant="outline" size="sm" className="justify-start bg-transparent">
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Download
-                                </Button>
+                                <a
+                                    href={selectedImage.src}
+                                    download={selectedImage.name}
+                                    rel="noreferrer"
+                                    target="_blank"
+                                    className="inline-block">
+                                    <Button variant="outline" size="sm" className="w-full justify-start bg-transparent">
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Download
+                                    </Button>
+                                </a>
                                 <Button variant="outline" size="sm" className="justify-start bg-transparent">
                                     <Share2 className="mr-2 h-4 w-4" />
                                     Share

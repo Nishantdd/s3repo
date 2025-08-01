@@ -13,7 +13,7 @@ interface NavbarProps {
 
 export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps) {
     return (
-        <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
+        <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur grayscale">
             <div className="flex h-14 items-center px-4">
                 <div className="flex items-center justify-center gap-1">
                     <Image src="/s3repo.png" width={32} height={32} draggable="false" alt="Logo" />

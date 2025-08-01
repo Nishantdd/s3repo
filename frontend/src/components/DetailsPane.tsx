@@ -2,7 +2,6 @@ import { Share2, Trash2, Download, Edit, Calendar, HardDrive, Layers } from 'luc
 import {
     Sidebar,
     SidebarContent,
-    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -124,10 +123,6 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                         </SidebarGroupContent>
                     </SidebarGroup>
                 </SidebarContent>
-
-                <SidebarFooter className="p-4">
-                    <p className="text-muted-foreground text-center text-xs">Select an image to view details</p>
-                </SidebarFooter>
             </Sidebar>
         );
     } else {
@@ -145,13 +140,13 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
 
         return (
             <Sidebar side="left" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
-                <SidebarHeader className="p-4 pb-0">
+                <SidebarHeader className="p-4">
                     <h2 className="text-lg font-semibold">Group Details</h2>
                 </SidebarHeader>
 
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupContent className="flex flex-col items-center space-y-4 p-4 text-center">
+                        <SidebarGroupContent className="flex flex-col items-center space-y-4 p-4 pt-16 text-center">
                             <Layers className="text-muted-foreground h-16 w-16" />
                             <div className="space-y-1">
                                 <p className="text-lg font-semibold">{selectedGroup.name}</p>
@@ -159,7 +154,7 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                     {imageCount} {imageCount === 1 ? 'item' : 'items'} • {totalSize}
                                 </p>
                             </div>
-                            <Separator className="w-full pt-2" />
+                            <Separator className="mt-16 mb-4 w-full pt-2" />
                             <div className="w-full space-y-2 text-left">
                                 <h3 className="text-sm font-medium">File Types</h3>
                                 {Object.entries(extensionCounts).map(([ext, count]) => (

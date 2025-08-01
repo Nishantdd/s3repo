@@ -24,10 +24,14 @@ export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps)
 
                 <div className="ml-auto flex items-center space-x-2">
                     <SidebarTrigger />
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" className="duration-75 active:scale-90">
                         <Plus className="h-5 w-5" />
                     </Button>
-                    <Button onClick={() => setIsAccountOpen(prev => !prev)} variant="ghost" size="icon">
+                    <Button
+                        onClick={() => setIsAccountOpen(prev => !prev)}
+                        variant="ghost"
+                        size="icon"
+                        className="duration-75 active:scale-90">
                         <User className="h-5 w-5" />
                         <span className="sr-only">User profile</span>
                     </Button>

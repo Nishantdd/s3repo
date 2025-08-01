@@ -93,6 +93,7 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                     alt={selectedImage.name}
                                     fill
                                     className="object-cover"
+                                    draggable="false"
                                 />
                             </div>
 

@@ -118,7 +118,10 @@ export default function Account({
 
     return (
         <>
-            <Button onClick={() => setIsAccountOpen(prev => !prev)} variant="ghost" className="absolute top-3 right-3">
+            <Button
+                onClick={() => setIsAccountOpen(prev => !prev)}
+                variant="ghost"
+                className="absolute top-3 right-3 duration-75 active:scale-90">
                 <X className="h-4 w-4" />
             </Button>
             <div className="mx-auto mt-16 max-w-sm space-y-6 p-6">

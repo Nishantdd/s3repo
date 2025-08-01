@@ -1,4 +1,4 @@
-import { Share2, Trash2, Download, Edit, Calendar, HardDrive, Layers } from 'lucide-react';
+import { Share2, Trash2, Download, Calendar, HardDrive, Layers } from 'lucide-react';
 import {
     Sidebar,
     SidebarContent,
@@ -67,6 +67,17 @@ function formatDate(isoString: string, locale: string | undefined = undefined): 
 
 export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) {
     if (selectedImage) {
+        const handleShare = async () => {
+            try {
+                const clipText = await navigator.clipboard.readText();
+                if (clipText === selectedImage.src) return;
+                await navigator.clipboard.writeText(selectedImage.src);
+            } catch (err) {
+                console.error('error occured: ', err);
+                await navigator.clipboard.writeText(selectedImage.src);
+            }
+        };
+
         return (
             <Sidebar side="left" className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
                 <SidebarHeader className="p-4 pb-0">
@@ -124,21 +135,26 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                     rel="noreferrer"
                                     target="_blank"
                                     className="inline-block">
-                                    <Button variant="outline" size="sm" className="w-full justify-start bg-transparent">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full justify-start bg-transparent duration-75 active:scale-95">
                                         <Download className="mr-2 h-4 w-4" />
                                         Download
                                     </Button>
                                 </a>
-                                <Button variant="outline" size="sm" className="justify-start bg-transparent">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleShare}
+                                    className="justify-start bg-transparent duration-75 active:scale-95">
                                     <Share2 className="mr-2 h-4 w-4" />
                                     Share
                                 </Button>
-                                <Button variant="outline" size="sm" className="justify-start bg-transparent">
-                                    <Edit className="mr-2 h-4 w-4" />
-                                    Edit
-                                </Button>
-                                <Separator className="my-2" />
-                                <Button variant="destructive" size="sm" className="justify-start">
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    className="justify-start duration-75 active:scale-95">
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Delete
                                 </Button>

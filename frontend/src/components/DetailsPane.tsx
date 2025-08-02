@@ -13,10 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import GroupData from '@/types/groupData';
 import ImageData from '@/types/imageData';
+import { Dispatch, SetStateAction } from 'react';
 
 interface DetailsPaneProps {
     selectedImage: ImageData | undefined;
     selectedGroup: GroupData;
+    setSelectedImage: Dispatch<SetStateAction<ImageData | undefined>>;
+    setGroupsData: Dispatch<SetStateAction<GroupData[]>>;
 }
 
 const parseSizeInBytes = (sizeStr: string): number => {
@@ -65,7 +68,7 @@ function formatDate(isoString: string, locale: string | undefined = undefined): 
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) {
+export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, setGroupsData }: DetailsPaneProps) {
     if (selectedImage) {
         const handleShare = async () => {
             try {
@@ -76,6 +79,29 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                 console.error('error occured: ', err);
                 await navigator.clipboard.writeText(selectedImage.src);
             }
+        };
+
+        const handleDelete = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/image`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    groupName: selectedGroup.name,
+                    imageName: selectedImage.name
+                })
+            })
+                .then(res => res.json())
+                .then(() => {
+                    setGroupsData(groups => {
+                        groups.forEach(group => {
+                            group.images = group.images.filter(image => image.id !== selectedImage?.id);
+                        });
+                        return groups;
+                    });
+                    setSelectedImage(undefined);
+                })
+                .catch(err => console.error(err.message));
         };
 
         return (
@@ -155,6 +181,7 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                 <Button
                                     variant="destructive"
                                     size="sm"
+                                    onClick={handleDelete}
                                     className="justify-start duration-75 active:scale-95">
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Delete
@@ -194,7 +221,7 @@ export function DetailsPane({ selectedImage, selectedGroup }: DetailsPaneProps) 
                                     {imageCount} {imageCount === 1 ? 'item' : 'items'} • {totalSize}
                                 </p>
                             </div>
-                            <Separator className="mt-16 mb-4 w-full pt-2" />
+                            <Separator className="mt-16 mb-4 w-full rounded-xl pt-2" />
                             <div className="w-full space-y-2 text-left">
                                 <h3 className="text-sm font-medium">File Types</h3>
                                 {Object.entries(extensionCounts).map(([ext, count]) => (

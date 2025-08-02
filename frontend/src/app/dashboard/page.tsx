@@ -25,6 +25,8 @@ export default function HomePage() {
         secretAccessKey: ''
     });
 
+    useEffect(() => console.log(groupsData), [groupsData]);
+
     useEffect(() => {
         const fetchS3Credentials = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/get-s3-credentials`, {
@@ -40,7 +42,7 @@ export default function HomePage() {
         };
 
         const getGroupsList = async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/groups`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/images`, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -79,10 +81,15 @@ export default function HomePage() {
                 />
                 {selectedGroup ? (
                     <div className="flex flex-1">
-                        <DetailsPane selectedGroup={selectedGroup} selectedImage={selectedImage} />
+                        <DetailsPane
+                            selectedGroup={selectedGroup}
+                            selectedImage={selectedImage}
+                            setGroupsData={setGroupsData}
+                            setSelectedImage={setSelectedImage}
+                        />
                         <main className="flex-1 overflow-auto p-6">
                             <ImageGallery
-                                groupData={selectedGroup}
+                                selectedGroup={selectedGroup}
                                 selectedImage={selectedImage}
                                 onImageSelect={(image: ImageData) =>
                                     setSelectedImage(image === selectedImage ? undefined : image)

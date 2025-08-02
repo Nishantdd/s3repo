@@ -6,19 +6,19 @@ import ImageData from '@/types/imageData';
 import GroupData from '@/types/groupData';
 
 interface ImageGalleryProps {
-    groupData: GroupData | undefined;
+    selectedGroup: GroupData | undefined;
     selectedImage: ImageData | undefined;
     onImageSelect: (image: ImageData) => void;
 }
 
-export function ImageGallery({ groupData, selectedImage, onImageSelect }: ImageGalleryProps) {
-    if (!groupData) {
+export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: ImageGalleryProps) {
+    if (!selectedGroup) {
         return <div>No images to display</div>;
     }
 
     return (
         <div className="grid auto-rows-[200px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {groupData.images.map((image, index) => (
+            {selectedGroup.images.map((image, index) => (
                 <div
                     key={image.id}
                     className={cn(

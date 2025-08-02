@@ -12,23 +12,24 @@ interface ImageGalleryProps {
 }
 
 export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: ImageGalleryProps) {
-    if (!selectedGroup) {
-        return <div>No images to display</div>;
+    if (!selectedGroup || selectedGroup.images.length === 0) {
+        return (
+            <div className="text-muted-foreground flex h-full w-full items-center justify-center p-8">
+                No images to display.
+            </div>
+        );
     }
 
     return (
-        <div className="grid auto-rows-[200px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {selectedGroup.images.map((image, index) => (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {selectedGroup.images.map(image => (
                 <div
                     key={image.id}
                     className={cn(
-                        'relative cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:shadow-lg',
+                        'relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:shadow-lg',
                         selectedImage?.id === image.id
                             ? 'border-primary ring-primary/20 ring-2'
-                            : 'border-border hover:border-primary/50',
-                        index % 7 === 0 ? 'col-span-2 row-span-1' : '',
-                        index % 5 === 0 && index % 7 !== 0 ? 'row-span-2' : '',
-                        index % 3 === 0 && index % 5 !== 0 && index % 7 !== 0 ? 'col-span-2' : ''
+                            : 'border-border hover:border-primary/50'
                     )}
                     onClick={() => onImageSelect(image)}>
                     <Image
@@ -36,7 +37,7 @@ export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: Im
                         alt={image.name}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                     />
                     <div className="absolute inset-0 bg-black/0 transition-colors hover:bg-black/10" />
                     {selectedImage?.id === image.id && (

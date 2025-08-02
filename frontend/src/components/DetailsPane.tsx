@@ -1,3 +1,5 @@
+'use client';
+
 import { Share2, Trash2, Download, Calendar, HardDrive, Layers } from 'lucide-react';
 import {
     Sidebar,
@@ -13,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import GroupData from '@/types/groupData';
 import ImageData from '@/types/imageData';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 interface DetailsPaneProps {
     selectedImage: ImageData | undefined;
@@ -69,6 +71,8 @@ function formatDate(isoString: string, locale: string | undefined = undefined): 
 }
 
 export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, setGroupsData }: DetailsPaneProps) {
+    const [isDeleting, setIsDeleting] = useState(false);
+
     if (selectedImage) {
         const handleShare = async () => {
             try {
@@ -82,6 +86,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
         };
 
         const handleDelete = async () => {
+            setIsDeleting(true);
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/image`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -101,7 +106,8 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                     });
                     setSelectedImage(undefined);
                 })
-                .catch(err => console.error(err.message));
+                .catch(err => console.error(err.message))
+                .finally(() => setIsDeleting(false));
         };
 
         return (
@@ -165,6 +171,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                                     <Button
                                         variant="outline"
                                         size="sm"
+                                        disabled={isDeleting}
                                         className="w-full justify-start bg-transparent duration-75 active:scale-95">
                                         <Download className="mr-2 h-4 w-4" />
                                         Download
@@ -174,6 +181,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                                     variant="outline"
                                     size="sm"
                                     onClick={handleShare}
+                                    disabled={isDeleting}
                                     className="justify-start bg-transparent duration-75 active:scale-95">
                                     <Share2 className="mr-2 h-4 w-4" />
                                     Share
@@ -182,6 +190,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                                     variant="destructive"
                                     size="sm"
                                     onClick={handleDelete}
+                                    disabled={isDeleting}
                                     className="justify-start duration-75 active:scale-95">
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     Delete

@@ -8,7 +8,7 @@ const EnvSchema = v.object({
     BETTER_AUTH_URL: v.string(),
     DATABASE_URL: v.string(),
     CLOUDFRONT_DOMAIN_URL: v.string(),
-    CLIENT_ORIGIN: v.string(),
+    CLIENT_ORIGIN: v.string()
 });
 
 const result = v.safeParse(EnvSchema, process.env);

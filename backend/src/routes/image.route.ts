@@ -1,13 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { auth } from '../utils/auth.js';
-import { listFoldersInBucket, getCloudfrontImagesUrlFromFolder } from '../utils/s3.js';
+import { listGroupsInBucket, getCloudfrontImagesUrlFromGroup, deleteImageFromFolder } from '../utils/s3.js';
 import { S3Credentials } from '../types/user.schema.js';
-import { getImagesFromGroupNameValidator, GroupData } from '../types/image.schema.js';
+import {
+    deleteImageFromGroupNameValidator,
+    getImagesFromGroupNameValidator,
+    GroupData
+} from '../types/image.schema.js';
 
 const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
     fastify.route({
         method: 'GET',
-        url: '/groups',
+        url: '/images',
         handler: async (request, reply) => {
             // Authenticate user and get session
             const session = await auth.api.getSession({
@@ -30,11 +34,11 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
 
             try {
                 // Get all folder names from the S3 bucket
-                const folderNames = await listFoldersInBucket(credentials);
+                const folderNames = await listGroupsInBucket(credentials);
 
                 // Concurrently fetch images for each folder
                 const groupDataPromises = folderNames.map(async (name): Promise<GroupData> => {
-                    const images = await getCloudfrontImagesUrlFromFolder(credentials, name);
+                    const images = await getCloudfrontImagesUrlFromGroup(credentials, name);
                     return { name, images };
                 });
 
@@ -78,7 +82,7 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
 
             try {
                 // Fetch images only for the specified group
-                const images = await getCloudfrontImagesUrlFromFolder(credentials, groupName);
+                const images = await getCloudfrontImagesUrlFromGroup(credentials, groupName);
                 reply
                     .status(200)
                     .send({ message: `Images for group '${groupName}' fetched successfully`, data: images });
@@ -86,6 +90,40 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
                 fastify.log.error(`Error fetching images for group ${groupName}:`, error);
                 reply.status(500).send({ error: `Failed to fetch images for group ${groupName}.` });
             }
+        }
+    });
+
+    fastify.route({
+        method: 'DELETE',
+        url: '/image',
+        schema: deleteImageFromGroupNameValidator,
+        handler: async (request, reply) => {
+            const body = request.body;
+
+            // Authenticate user
+            const session = await auth.api.getSession({
+                headers: new Headers(Object.entries(request.headers) as [string, string][])
+            });
+            if (!session?.user) {
+                return reply.status(401).send({ error: 'User not authenticated' });
+            }
+
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
+
+            // Validate credentials
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey) {
+                return reply.status(400).send({ error: 'S3 credentials are not configured.' });
+            }
+            const credentials: S3Credentials = {
+                bucketName,
+                bucketRegion,
+                accessKey,
+                secretAccessKey: decryptedSecretAccessKey
+            };
+
+            const isDeleted = await deleteImageFromFolder(credentials, body.groupName, body.imageName);
+            if (isDeleted) reply.status(200).send({ message: `Image ${body.imageName} deleted successfully` });
+            else reply.status(500).send({ error: `Failed to delete image ${body.imageName}.` });
         }
     });
 };

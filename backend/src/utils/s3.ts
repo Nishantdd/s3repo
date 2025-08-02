@@ -1,4 +1,11 @@
-import { PutObjectCommand, S3Client, ListObjectsV2Command, GetObjectCommand, _Object } from '@aws-sdk/client-s3';
+import {
+    PutObjectCommand,
+    S3Client,
+    ListObjectsV2Command,
+    GetObjectCommand,
+    _Object,
+    DeleteObjectCommand
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Credentials } from '../types/user.schema.js';
 import { ImageDetails } from '../types/image.schema.js';
@@ -40,7 +47,7 @@ const getS3Client = (credentials: S3Credentials) => {
  * @param credentials - The user's S3 access credentials.
  * @returns A promise that resolves to an array of folder names.
  */
-export const listFoldersInBucket = async (credentials: S3Credentials): Promise<string[]> => {
+export const listGroupsInBucket = async (credentials: S3Credentials): Promise<string[]> => {
     const s3Client = getS3Client(credentials);
     const command = new ListObjectsV2Command({
         Bucket: credentials.bucketName,
@@ -58,7 +65,7 @@ export const listFoldersInBucket = async (credentials: S3Credentials): Promise<s
  * @param folderName - The name of the folder to retrieve images from.
  * @returns A promise that resolves to an array of image details.
  */
-export const getCloudfrontImagesUrlFromFolder = async (
+export const getCloudfrontImagesUrlFromGroup = async (
     credentials: S3Credentials,
     folderName: string
 ): Promise<ImageDetails[]> => {
@@ -94,7 +101,7 @@ export const getCloudfrontImagesUrlFromFolder = async (
  * @param folderName - The name of the folder to retrieve images from.
  * @returns A promise that resolves to an array of image details.
  */
-export const getSignedImagesUrlFromFolder = async (
+export const getSignedImagesUrlFromGroup = async (
     credentials: S3Credentials,
     folderName: string
 ): Promise<ImageDetails[]> => {
@@ -154,3 +161,25 @@ export async function getPutObjectSigned(credentials: S3Credentials, filename: s
         return '';
     }
 }
+
+export const deleteImageFromFolder = async (
+    credentials: S3Credentials,
+    groupName: string,
+    imageName: string
+): Promise<boolean> => {
+    const s3Client = getS3Client(credentials);
+    const key = `${groupName}/${imageName}`;
+
+    const command = new DeleteObjectCommand({
+        Bucket: credentials.bucketName,
+        Key: key
+    });
+
+    try {
+        await s3Client.send(command);
+        return true;
+    } catch (error) {
+        console.error(`Error deleting object ${key} from bucket ${credentials.bucketName}:`, error);
+        return false;
+    }
+};

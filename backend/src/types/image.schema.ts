@@ -20,5 +20,12 @@ export const getImagesFromGroupNameValidator = {
     })
 };
 
+export const deleteImageFromGroupNameValidator = {
+    body: Type.Object({
+        groupName: Type.String(),
+        imageName: Type.String()
+    })
+};
+
 export type GroupData = Static<typeof GroupDataSchema>;
 export type ImageDetails = Static<typeof ImageSchema>;

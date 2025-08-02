@@ -1,14 +1,7 @@
 'use client';
 
-import { Share2, Trash2, Download, Calendar, HardDrive, Layers } from 'lucide-react';
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader
-} from '@/components/ui/sidebar';
+import { Share2, Trash2, Download, Layers } from 'lucide-react';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -16,58 +9,13 @@ import Image from 'next/image';
 import GroupData from '@/types/groupData';
 import ImageData from '@/types/imageData';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { formatBytes, formatDate, getFileType, parseSizeInBytes } from '@/lib/helpers';
 
 interface DetailsPaneProps {
     selectedImage: ImageData | undefined;
     selectedGroup: GroupData;
     setSelectedImage: Dispatch<SetStateAction<ImageData | undefined>>;
     setGroupsData: Dispatch<SetStateAction<GroupData[]>>;
-}
-
-const parseSizeInBytes = (sizeStr: string): number => {
-    const parts = sizeStr.split(' ');
-    if (parts.length !== 2) return 0;
-
-    const value = parseFloat(parts[0]);
-    const unit = parts[1].toUpperCase();
-
-    switch (unit) {
-        case 'GB':
-            return value * 1024 * 1024 * 1024;
-        case 'MB':
-            return value * 1024 * 1024;
-        case 'KB':
-            return value * 1024;
-        case 'B':
-            return value;
-        default:
-            return 0;
-    }
-};
-
-const formatBytes = (bytes: number, decimals = 2): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-};
-
-function formatDate(isoString: string, locale: string | undefined = undefined): string {
-    const date = new Date(isoString);
-
-    if (isNaN(date.getTime())) {
-        return 'Invalid Date';
-    }
-
-    const options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    };
-
-    return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, setGroupsData }: DetailsPaneProps) {
@@ -80,7 +28,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                 if (clipText === selectedImage.src) return;
                 await navigator.clipboard.writeText(selectedImage.src);
             } catch (err) {
-                console.error('error occured: ', err);
+                console.log('error occured: ', err);
                 await navigator.clipboard.writeText(selectedImage.src);
             }
         };
@@ -118,7 +66,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
 
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupContent className="space-y-4 p-4 pt-2">
+                        <SidebarGroupContent className="mt-4 space-y-4 px-4">
                             <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
                                 <Image
                                     src={selectedImage.src || '/placeholder.svg'}
@@ -128,73 +76,68 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                                     draggable="false"
                                 />
                             </div>
-
-                            <div className="space-y-3">
-                                <div>
-                                    <h3 className="text-muted-foreground text-sm font-medium">Filename</h3>
-                                    <p className="font-mono text-sm break-all">{selectedImage.name}</p>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <HardDrive className="text-muted-foreground h-4 w-4" />
-                                    <Badge variant="secondary">{selectedImage.size}</Badge>
-                                </div>
-
-                                <Separator />
-
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Calendar className="text-muted-foreground h-4 w-4" />
-                                        <span className="text-muted-foreground">Created:</span>
-                                        <span>{formatDate(selectedImage.created)}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Calendar className="text-muted-foreground h-4 w-4" />
-                                        <span className="text-muted-foreground">Updated:</span>
-                                        <span>{formatDate(selectedImage.updated)}</span>
-                                    </div>
-                                </div>
-                            </div>
                         </SidebarGroupContent>
                     </SidebarGroup>
 
                     <SidebarGroup>
-                        <SidebarGroupLabel>Actions</SidebarGroupLabel>
-                        <SidebarGroupContent className="p-4">
-                            <div className="grid gap-2">
-                                <a
-                                    href={selectedImage.src}
-                                    download={selectedImage.name}
-                                    rel="noreferrer"
-                                    target="_blank"
-                                    className="inline-block">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        disabled={isDeleting}
-                                        className="w-full justify-start bg-transparent duration-75 active:scale-95">
-                                        <Download className="mr-2 h-4 w-4" />
-                                        Download
-                                    </Button>
-                                </a>
-                                <Button
+                        <SidebarGroupContent className="space-y-4 px-4 pt-2">
+                            <div className="space-y-3">
+                                <Badge variant="secondary" className="flex w-full flex-col items-start">
+                                    <div className="text-muted-foreground text-sm font-medium">Filename</div>
+                                    <p className="font-mono text-sm break-all">{selectedImage.name}</p>
+                                </Badge>
+
+                                <Badge variant="secondary" className="flex w-full flex-col items-start">
+                                    <div className="text-muted-foreground text-sm font-medium">Type</div>
+                                    <p className="font-mono text-sm break-all">{getFileType(selectedImage.name)}</p>
+                                </Badge>
+
+                                <Badge variant="secondary" className="flex w-full flex-col items-start">
+                                    <div className="text-muted-foreground text-sm font-medium">Size</div>
+                                    <p className="font-mono text-sm break-all">{selectedImage.size}</p>
+                                </Badge>
+
+                                <Badge variant="secondary" className="flex w-full flex-col items-start">
+                                    <div className="text-muted-foreground text-sm font-medium">Created</div>
+                                    <p className="font-mono text-sm break-all">{formatDate(selectedImage.created)}</p>
+                                    <div className="text-muted-foreground text-sm font-medium">Updated</div>
+                                    <p className="font-mono text-sm break-all">{formatDate(selectedImage.updated)}</p>
+                                </Badge>
+
+                                <Badge
                                     variant="outline"
-                                    size="sm"
-                                    onClick={handleShare}
-                                    disabled={isDeleting}
-                                    className="justify-start bg-transparent duration-75 active:scale-95">
-                                    <Share2 className="mr-2 h-4 w-4" />
-                                    Share
-                                </Button>
-                                <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={handleDelete}
-                                    disabled={isDeleting}
-                                    className="justify-start duration-75 active:scale-95">
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Delete
-                                </Button>
+                                    className="mt-8 flex w-full items-start justify-evenly shadow-inner">
+                                    <a
+                                        href={selectedImage.src}
+                                        download={selectedImage.name}
+                                        rel="noreferrer"
+                                        target="_blank"
+                                        className="inline-block">
+                                        <Button
+                                            variant="link"
+                                            size="icon"
+                                            disabled={isDeleting}
+                                            className="duration-75 active:scale-90">
+                                            <Download className="h-4 w-4" />
+                                        </Button>
+                                    </a>
+                                    <Button
+                                        variant="link"
+                                        size="icon"
+                                        onClick={handleShare}
+                                        disabled={isDeleting}
+                                        className="duration-75 active:scale-90">
+                                        <Share2 className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        variant="link"
+                                        size="sm"
+                                        onClick={handleDelete}
+                                        disabled={isDeleting}
+                                        className="duration-75 active:scale-90">
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </Badge>
                             </div>
                         </SidebarGroupContent>
                     </SidebarGroup>

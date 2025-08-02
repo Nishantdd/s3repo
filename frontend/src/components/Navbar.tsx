@@ -14,15 +14,15 @@ interface NavbarProps {
 export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps) {
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b grayscale backdrop-blur">
-            <div className="flex h-14 items-center px-4">
-                <div className="flex items-center justify-center gap-1">
+            <div className="flex justify-between h-14 items-center px-4">
+                <div className="hidden md:flex items-center justify-center gap-1">
                     <Image src="/s3repo.png" width={32} height={32} draggable="false" alt="Logo" />
                     <h1 className="text-lg font-semibold">S3Repo</h1>
                 </div>
 
                 <GroupSelector groups={groups} onGroupSelect={onGroupSelect} />
 
-                <div className="ml-auto flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
                     <SidebarTrigger />
                     <Button variant="ghost" size="icon" className="duration-75 active:scale-90">
                         <Plus className="h-5 w-5" />

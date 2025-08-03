@@ -108,10 +108,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                                     variant="outline"
                                     className="mt-8 flex w-full items-start justify-evenly shadow-inner">
                                     <a
-                                        href={selectedImage.src}
-                                        download={selectedImage.name}
-                                        rel="noreferrer"
-                                        target="_blank"
+                                        href={`/api/download-image?url=${encodeURIComponent(selectedImage.src)}&name=${encodeURIComponent(selectedImage.name)}`}
                                         className="inline-block">
                                         <Button
                                             variant="link"

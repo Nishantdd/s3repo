@@ -30,9 +30,9 @@ export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: Im
                     <div
                         key={image.id}
                         className={cn(
-                            'group relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 transition-all hover:shadow-lg',
+                            'group relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 transition-all',
                             selectedImage?.id === image.id
-                                ? 'border-primary ring-primary/20 ring-2'
+                                ? 'border-primary shadow-2xl'
                                 : 'border-border hover:border-primary/50'
                         )}
                         onClick={() => onImageSelect(image)}>
@@ -40,13 +40,18 @@ export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: Im
                             src={image.src || '/placeholder.svg'}
                             alt={image.name}
                             fill
-                            className="object-cover"
+                            className={cn(
+                                'object-cover transition-transform duration-300',
+                                selectedImage?.id === image.id ? 'scale-[1.08]' : ''
+                            )}
                             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                         />
                         <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
 
                         {selectedImage?.id === image.id && (
-                            <div className="bg-primary absolute top-2 right-2 h-3 w-3 rounded-full" />
+                            <div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-white/60 px-2 py-1 text-[10px] font-medium text-black backdrop-blur-2xl">
+                                Selected
+                            </div>
                         )}
 
                         <a

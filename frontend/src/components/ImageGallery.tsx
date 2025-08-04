@@ -45,6 +45,7 @@ export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: Im
                                 selectedImage?.id === image.id ? 'scale-[1.08]' : ''
                             )}
                             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+                            loading='lazy'
                         />
                         <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
 

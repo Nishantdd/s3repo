@@ -25,8 +25,6 @@ export default function HomePage() {
         secretAccessKey: ''
     });
 
-    useEffect(() => console.log(groupsData), [groupsData]);
-
     useEffect(() => {
         const fetchS3Credentials = async () => {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/get-s3-credentials`, {

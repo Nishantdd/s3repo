@@ -62,7 +62,7 @@ export default function HomePage() {
     return (
         <div className="[--header-height:calc(--spacing(14))]">
             <SidebarProvider
-                defaultOpen={true}
+                defaultOpen={false}
                 className="flex flex-col"
                 style={
                     {

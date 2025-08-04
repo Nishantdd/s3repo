@@ -12,9 +12,11 @@ import { Loading } from '@/components/Loading';
 import Account from '@/components/Account';
 import S3Credentials from '@/types/s3Credentials';
 import ImageData from '@/types/imageData';
+import { Uploader } from '@/components/Uploader';
 
 export default function HomePage() {
     const [groupsData, setGroupsData] = useState<GroupData[]>([]);
+    const [isUploaderOpen, setIsUploaderOpen] = useState<boolean>(false);
     const [selectedImage, setSelectedImage] = useState<ImageData | undefined>();
     const [selectedGroup, setSelectedGroup] = useState<GroupData | undefined>();
     const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
@@ -72,10 +74,17 @@ export default function HomePage() {
                 }>
                 <Navbar
                     setIsAccountOpen={setIsAccountOpen}
+                    setIsUploaderOpen={setIsUploaderOpen}
                     groups={groupsData.map(groupData => groupData.name)}
                     onGroupSelect={(groupIndex: number) => {
                         setSelectedGroup(groupsData[groupIndex]);
                     }}
+                />
+                <Uploader
+                    isUploaderOpen={isUploaderOpen}
+                    setIsUploaderOpen={setIsUploaderOpen}
+                    selectedGroup={selectedGroup}
+                    setGroupsData={setGroupsData}
                 />
                 {selectedGroup ? (
                     <div className="flex flex-1">

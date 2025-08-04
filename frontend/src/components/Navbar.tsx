@@ -9,9 +9,10 @@ interface NavbarProps {
     groups: string[];
     onGroupSelect: (groupIndex: number) => void;
     setIsAccountOpen: Dispatch<SetStateAction<boolean>>;
+    setIsUploaderOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps) {
+export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, onGroupSelect }: NavbarProps) {
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b grayscale backdrop-blur">
             <div className="flex h-14 items-center justify-between px-4">
@@ -24,7 +25,11 @@ export function Navbar({ setIsAccountOpen, groups, onGroupSelect }: NavbarProps)
 
                 <div className="flex items-center space-x-2">
                     <SidebarTrigger />
-                    <Button variant="ghost" size="icon" className="duration-75 active:scale-90">
+                    <Button
+                        onClick={() => setIsUploaderOpen(prev => !prev)}
+                        variant="ghost"
+                        size="icon"
+                        className="duration-75 active:scale-90">
                         <Plus className="h-5 w-5" />
                     </Button>
                     <Button

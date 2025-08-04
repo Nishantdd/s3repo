@@ -140,24 +140,31 @@ export const getSignedImagesUrlFromGroup = async (
 };
 
 /**
- * Generates temporary, presigned PUT URL for provided image (Uses intelligent tiering for storage).
- * @param credentials - The user's S3 access credentials.
- * @param filename - The name of the file to upload.
- * @returns A promise that resolves to signed url string.
+ * Generates a pre-signed URL for uploading a file to S3.
+ * @param credentials - The user's S3 credentials.
+ * @param key - The full object key for S3 (e.g., 'group/image.jpg').
+ * @param contentType - The MIME type of the file (e.g., 'image/jpeg').
+ * @returns The pre-signed URL, or an empty string on failure.
  */
-export async function getPutObjectSigned(credentials: S3Credentials, filename: string): Promise<string> {
+export async function getPutObjectUrlSigned(
+    credentials: S3Credentials,
+    key: string,
+    contentType: string
+): Promise<string> {
     const s3 = getS3Client(credentials);
 
     const command = new PutObjectCommand({
         Bucket: credentials.bucketName,
-        Key: filename,
+        Key: key,
+        ContentType: contentType,
         StorageClass: 'INTELLIGENT_TIERING'
     });
 
     try {
         const signedUrl = await getSignedUrl(s3, command, { expiresIn: 1800 });
         return signedUrl;
-    } catch {
+    } catch (error) {
+        console.error('Error generating signed URL:', error);
         return '';
     }
 }

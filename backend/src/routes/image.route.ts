@@ -1,12 +1,19 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { auth } from '../utils/auth.js';
-import { listGroupsInBucket, getCloudfrontImagesUrlFromGroup, deleteImageFromFolder } from '../utils/s3.js';
+import {
+    listGroupsInBucket,
+    getCloudfrontImagesUrlFromGroup,
+    deleteImageFromFolder,
+    getPutObjectUrlSigned
+} from '../utils/s3.js';
 import { S3Credentials } from '../types/user.schema.js';
 import {
     deleteImageFromGroupNameValidator,
+    generateUploadUrlValidator,
     getImagesFromGroupNameValidator,
     GroupData
 } from '../types/image.schema.js';
+import path from 'path';
 
 const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
     fastify.route({
@@ -89,6 +96,50 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
             } catch (error) {
                 fastify.log.error(`Error fetching images for group ${groupName}:`, error);
                 reply.status(500).send({ error: `Failed to fetch images for group ${groupName}.` });
+            }
+        }
+    });
+
+    fastify.route({
+        method: 'POST',
+        url: '/generate-upload-url',
+        schema: generateUploadUrlValidator,
+        handler: async (request, reply) => {
+            // Authenticate user and get credentials
+            const session = await auth.api.getSession({
+                headers: new Headers(Object.entries(request.headers) as [string, string][])
+            });
+            if (!session?.user) {
+                return reply.status(401).send({ error: 'User not authenticated' });
+            }
+
+            // Validate credentials
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey) {
+                return reply.status(400).send({ error: 'S3 credentials are not configured.' });
+            }
+            const credentials: S3Credentials = {
+                bucketName,
+                bucketRegion,
+                accessKey,
+                secretAccessKey: decryptedSecretAccessKey
+            };
+
+            // Get file metadata from request body
+            const { groupName, filename, contentType } = request.body;
+            const s3Key = path.join(groupName, filename);
+
+            // 4. Generate the pre-signed URL
+            try {
+                const signedUrl = await getPutObjectUrlSigned(credentials, s3Key, contentType);
+                if (signedUrl) {
+                    reply.status(200).send({ signedUrl });
+                } else {
+                    reply.status(500).send({ error: 'Failed to generate upload URL.' });
+                }
+            } catch (error) {
+                fastify.log.error(`Error in /generate-upload-url for key ${s3Key}:`, error);
+                reply.status(500).send({ error: 'An unexpected server error occurred.' });
             }
         }
     });

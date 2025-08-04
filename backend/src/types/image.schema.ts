@@ -20,6 +20,14 @@ export const getImagesFromGroupNameValidator = {
     })
 };
 
+export const generateUploadUrlValidator = {
+    body: Type.Object({
+        groupName: Type.String({ minLength: 1 }),
+        filename: Type.String({ minLength: 1 }),
+        contentType: Type.String({ minLength: 1, description: 'The MIME type of the file.' })
+    })
+};
+
 export const deleteImageFromGroupNameValidator = {
     body: Type.Object({
         groupName: Type.String(),

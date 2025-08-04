@@ -192,7 +192,6 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
         setIsUploaderOpen(false);
         setTimeout(() => {
             setFiles([]);
-            setGroupName('');
             setIsUploading(false);
             setStartTime(null);
         }, 300);

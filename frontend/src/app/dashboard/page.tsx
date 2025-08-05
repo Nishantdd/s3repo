@@ -89,8 +89,6 @@ export default function Dashboard() {
     if (isPending || isLoading) return <Loading />;
     if (!session || error) return redirect('/login');
 
-    if (isAccountOpen) return <Account s3Credentials={s3Credentials} setIsAccountOpen={setIsAccountOpen} />;
-
     return (
         <div className="[--header-height:calc(--spacing(14))]">
             <SidebarProvider
@@ -110,6 +108,11 @@ export default function Dashboard() {
                     onGroupSelect={(groupIndex: number) => {
                         handleGroupSelect(groupIndex);
                     }}
+                />
+                <Account
+                    isAccountOpen={isAccountOpen}
+                    setIsAccountOpen={setIsAccountOpen}
+                    s3Credentials={s3Credentials}
                 />
                 <Uploader
                     isUploaderOpen={isUploaderOpen}

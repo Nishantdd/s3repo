@@ -54,7 +54,7 @@ export default function Account({
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ [field]: currentValues[field] })
+                body: JSON.stringify({ ...currentValues })
             });
             if (!response.ok) throw new Error('Failed to save credentials.');
 

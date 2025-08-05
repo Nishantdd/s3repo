@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
@@ -14,7 +14,7 @@ import S3Credentials from '@/types/s3Credentials';
 import ImageData from '@/types/imageData';
 import { Uploader } from '@/components/Uploader';
 
-export default function Dashboard() {
+function DashboardContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -143,5 +143,13 @@ export default function Dashboard() {
                 )}
             </SidebarProvider>
         </div>
+    );
+}
+
+export default function Dashboard() {
+    return (
+        <Suspense fallback={<Loading />}>
+            <DashboardContent />
+        </Suspense>
     );
 }

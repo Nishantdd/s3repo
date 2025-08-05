@@ -7,25 +7,45 @@ import { Navbar } from '@/components/Navbar';
 import { ImageGallery } from '@/components/ImageGallery';
 import GroupData from '@/types/groupData';
 import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Loading } from '@/components/Loading';
 import Account from '@/components/Account';
 import S3Credentials from '@/types/s3Credentials';
 import ImageData from '@/types/imageData';
 import { Uploader } from '@/components/Uploader';
 
-export default function HomePage() {
+export default function Dashboard() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const updateQueryParams = (key: string, value?: string) => {
+        const params = new URLSearchParams(Array.from(searchParams.entries()));
+        if (value) {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
+        router.replace(`?${params.toString()}`);
+    };
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
+    const [isUploaderOpen, setIsUploaderOpen] = useState<boolean>(searchParams?.get('uploader') === 'open');
     const [groupsData, setGroupsData] = useState<GroupData[]>([]);
-    const [isUploaderOpen, setIsUploaderOpen] = useState<boolean>(false);
     const [selectedImage, setSelectedImage] = useState<ImageData | undefined>();
     const [selectedGroup, setSelectedGroup] = useState<GroupData | undefined>();
-    const [isAccountOpen, setIsAccountOpen] = useState<boolean>(false);
     const [s3Credentials, setS3Credentials] = useState<S3Credentials>({
         accessKey: '',
         bucketName: '',
         bucketRegion: '',
         secretAccessKey: ''
     });
+
+    const handleGroupSelect = (groupIndex: number) => {
+        const group = groupsData[groupIndex];
+        setSelectedGroup(group);
+        updateQueryParams('group', group.name);
+    };
 
     useEffect(() => {
         const fetchS3Credentials = async () => {
@@ -42,21 +62,31 @@ export default function HomePage() {
         };
 
         const getGroupsList = async () => {
+            setIsLoading(true);
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/images`, {
                 method: 'GET',
                 credentials: 'include'
             })
                 .then(res => res.json())
-                .then(res => setGroupsData(res.data || []))
-                .catch(err => console.error(err.message));
+                .then(res => {
+                    const groupsData: GroupData[] | undefined = res.data;
+                    setGroupsData(groupsData || []);
+                    const groupName = searchParams?.get('group');
+                    const group: GroupData | undefined = groupName
+                        ? groupsData?.find(group => group?.name === groupName)
+                        : undefined;
+                    setSelectedGroup(group);
+                })
+                .catch(err => console.error(err.message))
+                .finally(() => setIsLoading(false));
         };
 
-        fetchS3Credentials();
         getGroupsList();
+        fetchS3Credentials();
     }, []);
 
     const { data: session, isPending, error } = authClient.useSession();
-    if (isPending) return <Loading />;
+    if (isPending || isLoading) return <Loading />;
     if (!session || error) return redirect('/login');
 
     if (isAccountOpen) return <Account s3Credentials={s3Credentials} setIsAccountOpen={setIsAccountOpen} />;
@@ -76,8 +106,9 @@ export default function HomePage() {
                     setIsAccountOpen={setIsAccountOpen}
                     setIsUploaderOpen={setIsUploaderOpen}
                     groups={groupsData.map(groupData => groupData.name)}
+                    selectedGroup={selectedGroup}
                     onGroupSelect={(groupIndex: number) => {
-                        setSelectedGroup(groupsData[groupIndex]);
+                        handleGroupSelect(groupIndex);
                     }}
                 />
                 <Uploader

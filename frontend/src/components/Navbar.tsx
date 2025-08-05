@@ -4,15 +4,17 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import { GroupSelector } from './GroupSelector';
 import { Dispatch, SetStateAction } from 'react';
+import GroupData from '@/types/groupData';
 
 interface NavbarProps {
     groups: string[];
+    selectedGroup: GroupData | undefined;
     onGroupSelect: (groupIndex: number) => void;
     setIsAccountOpen: Dispatch<SetStateAction<boolean>>;
     setIsUploaderOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, onGroupSelect }: NavbarProps) {
+export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, selectedGroup, onGroupSelect }: NavbarProps) {
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b grayscale backdrop-blur">
             <div className="flex h-14 items-center justify-between px-4">
@@ -21,7 +23,7 @@ export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, onGroupSel
                     <h1 className="text-lg font-semibold">S3Repo</h1>
                 </div>
 
-                <GroupSelector groups={groups} onGroupSelect={onGroupSelect} />
+                <GroupSelector selectedGroup={selectedGroup} groups={groups} onGroupSelect={onGroupSelect} />
 
                 <div className="flex items-center space-x-2">
                     <SidebarTrigger />

@@ -1,21 +1,23 @@
 'use client';
 
-import * as React from 'react';
+import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import GroupData from '@/types/groupData';
 
 interface GroupSelectorProps {
     groups: string[];
+    selectedGroup: GroupData | undefined;
     onGroupSelect: (groupIndex: number) => void;
 }
 
-export function GroupSelector({ groups, onGroupSelect }: GroupSelectorProps) {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState('');
+export function GroupSelector({ groups, selectedGroup, onGroupSelect }: GroupSelectorProps) {
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(selectedGroup?.name || '');
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

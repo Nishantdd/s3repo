@@ -3,9 +3,10 @@ import { customSession } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db/drizzle.js';
 import { schema } from '../db/schema.js';
+import { config } from './config.js';
 
 export const auth = betterAuth({
-    trustedOrigins: ['http://localhost:3000'],
+    trustedOrigins: [config.CLIENT_ORIGIN],
     emailAndPassword: {
         enabled: true
     },

@@ -5,7 +5,7 @@ import userRoutes from './routes/user.route.js';
 import imageRoutes from './routes/image.route.js';
 import { config } from './utils/config.js';
 
-const PORT = 8000;
+const PORT = config.PORT || 8000;
 const fastify = Fastify({ logger: false });
 
 // Cross Origin Resource Sharing
@@ -34,7 +34,7 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 
 // Start server
-fastify.listen({ port: PORT }, err => {
+fastify.listen({ port: PORT, host: '0.0.0.0' }, err => {
     if (err) {
         fastify.log.error(err);
         process.exit(1);

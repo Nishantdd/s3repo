@@ -7,6 +7,14 @@ import { config } from './config.js';
 
 export const auth = betterAuth({
     trustedOrigins: [config.CLIENT_ORIGIN],
+    advanced: {
+        useSecureCookies: config.NODE_ENV === 'production',
+        defaultCookieAttributes: {
+            secure: config.NODE_ENV === 'production',
+            partitioned: config.NODE_ENV === 'production',
+            sameSite: config.NODE_ENV === 'production' ? 'None' : 'Lax'
+        }
+    },
     emailAndPassword: {
         enabled: true
     },

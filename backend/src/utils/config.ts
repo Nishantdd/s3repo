@@ -9,6 +9,7 @@ const EnvSchema = v.object({
     DATABASE_URL: v.string(),
     CLOUDFRONT_DOMAIN_URL: v.string(),
     CLIENT_ORIGIN: v.string(),
+    NODE_ENV: v.string(),
     PORT: v.pipe(
         v.string(),
         v.transform(s => {

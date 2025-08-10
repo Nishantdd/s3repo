@@ -1,24 +1,26 @@
-'use client';
-
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import ImageData from '@/types/imageData';
 import GroupData from '@/types/groupData';
 import { Download, LayoutList, Grid, Grid2x2 } from 'lucide-react';
-import { useState } from 'react';
 import { formatDate } from '@/lib/helpers';
-
-type ViewMode = 'details' | 'grid-small' | 'grid-large';
+import { ViewMode } from '@/types/viewMode';
 
 interface ImageGalleryProps {
+    viewMode: ViewMode;
+    setViewMode: (view: ViewMode) => void;
     selectedGroup: GroupData | undefined;
     selectedImage: ImageData | undefined;
     onImageSelect: (image: ImageData) => void;
 }
 
-export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: ImageGalleryProps) {
-    const [viewMode, setViewMode] = useState<ViewMode>('grid-large');
-
+export function ImageGallery({
+    viewMode,
+    setViewMode,
+    selectedGroup,
+    selectedImage,
+    onImageSelect
+}: ImageGalleryProps) {
     if (!selectedGroup || selectedGroup.images.length === 0) {
         return (
             <div className="text-muted-foreground flex h-full w-full items-center justify-center p-8">

@@ -14,6 +14,7 @@ import S3Credentials from '@/types/s3Credentials';
 import ImageData from '@/types/imageData';
 import { Uploader } from '@/components/Uploader';
 import { toast } from 'sonner';
+import { ViewMode } from '@/types/viewMode';
 
 function DashboardContent() {
     const searchParams = useSearchParams();
@@ -35,6 +36,11 @@ function DashboardContent() {
     const [groupsData, setGroupsData] = useState<GroupData[]>([]);
     const [selectedImage, setSelectedImage] = useState<ImageData | undefined>();
     const [selectedGroup, setSelectedGroup] = useState<GroupData | undefined>();
+    const [viewMode, setViewMode] = useState<ViewMode>(() => {
+        const paramsView = searchParams?.get('view');
+        if (paramsView === 'details' || paramsView === 'grid-small' || paramsView === 'grid-large') return paramsView;
+        else return 'details';
+    });
     const [s3Credentials, setS3Credentials] = useState<S3Credentials>({
         accessKey: '',
         bucketName: '',
@@ -46,6 +52,11 @@ function DashboardContent() {
         const group = groupsData[groupIndex];
         setSelectedGroup(group);
         updateQueryParams('group', group.name);
+    };
+
+    const handleViewSelect = (view: ViewMode) => {
+        setViewMode(view);
+        updateQueryParams('view', view);
     };
 
     useEffect(() => {
@@ -143,6 +154,8 @@ function DashboardContent() {
                         />
                         <main className="flex-1 overflow-auto p-6">
                             <ImageGallery
+                                viewMode={viewMode}
+                                setViewMode={handleViewSelect}
                                 selectedGroup={selectedGroup}
                                 selectedImage={selectedImage}
                                 onImageSelect={(image: ImageData) =>

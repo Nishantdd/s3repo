@@ -9,6 +9,7 @@ import { RotateCcw, Edit, Save, LogOut, Loader } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { redirect } from 'next/navigation';
 import S3Credentials from '@/types/s3Credentials';
+import { toast } from 'sonner';
 
 export default function Account({
     isAccountOpen,
@@ -56,12 +57,13 @@ export default function Account({
                 credentials: 'include',
                 body: JSON.stringify({ ...currentValues })
             });
-            if (!response.ok) throw new Error('Failed to save credentials.');
 
             const res = await response.json();
+            if (res.error) throw new Error(res.error);
             setOriginalValues(res.data);
+            toast.success('S3 credentials updated successfully');
         } catch (err) {
-            console.error(`Error saving ${field}: `, (err as Error).message);
+            toast.error(`Error saving ${field}: ${(err as Error).message}`);
         }
     };
 

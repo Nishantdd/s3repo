@@ -10,6 +10,7 @@ import GroupData from '@/types/groupData';
 import ImageData from '@/types/imageData';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { formatBytes, formatDate, getFileType, parseSizeInBytes } from '@/lib/helpers';
+import { toast } from 'sonner';
 
 interface DetailsPaneProps {
     selectedImage: ImageData | undefined;
@@ -23,14 +24,8 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
 
     if (selectedImage) {
         const handleShare = async () => {
-            try {
-                const clipText = await navigator.clipboard.readText();
-                if (clipText === selectedImage.src) return;
-                await navigator.clipboard.writeText(selectedImage.src);
-            } catch (err) {
-                console.log('error occured: ', err);
-                await navigator.clipboard.writeText(selectedImage.src);
-            }
+            await navigator.clipboard.writeText(selectedImage.src);
+            toast.info('URL copied to clipboard');
         };
 
         const handleDelete = async () => {
@@ -45,13 +40,19 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                 })
             })
                 .then(res => res.json())
-                .then(() => {
+                .then(res => {
+                    if (res.error) {
+                        toast.error(res.error);
+                        return;
+                    }
+
                     setGroupsData(groups => {
                         groups.forEach(group => {
                             group.images = group.images.filter(image => image.id !== selectedImage?.id);
                         });
                         return groups;
                     });
+
                     setSelectedImage(undefined);
                 })
                 .catch(err => console.error(err.message))

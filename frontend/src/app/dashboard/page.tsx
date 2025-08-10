@@ -13,6 +13,7 @@ import Account from '@/components/Account';
 import S3Credentials from '@/types/s3Credentials';
 import ImageData from '@/types/imageData';
 import { Uploader } from '@/components/Uploader';
+import { toast } from 'sonner';
 
 function DashboardContent() {
     const searchParams = useSearchParams();
@@ -57,7 +58,14 @@ function DashboardContent() {
                 next: { revalidate: 600 }
             })
                 .then(res => res.json())
-                .then(res => setS3Credentials(res.data))
+                .then(res => {
+                    if (res.error) {
+                        toast.error(res.error);
+                        return;
+                    }
+
+                    setS3Credentials(res.data);
+                })
                 .catch(err => console.error(err.message));
         };
 
@@ -69,6 +77,11 @@ function DashboardContent() {
             })
                 .then(res => res.json())
                 .then(res => {
+                    if (res.error) {
+                        toast.error(res.error);
+                        return;
+                    }
+
                     const groupsData: GroupData[] | undefined = res.data;
                     setGroupsData(groupsData || []);
                     const groupName = searchParams?.get('group');

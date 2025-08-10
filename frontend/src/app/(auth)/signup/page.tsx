@@ -8,6 +8,7 @@ import { ArrowRight, Loader } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ export default function Login() {
                 },
                 onError: ctx => {
                     setLoading(false);
-                    alert(ctx.error.message);
+                    toast.error(ctx.error.message);
                 }
             }
         );

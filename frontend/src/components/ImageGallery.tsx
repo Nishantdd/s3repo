@@ -89,19 +89,19 @@ export function ImageGallery({ selectedGroup, selectedImage, onImageSelect }: Im
                                     isSelected ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'
                                 )}
                                 onClick={() => onImageSelect(image)}>
-                                <div className="pointer-events-none absolute left-4 z-10 scale-90 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100">
-                                    <div className="relative h-28 w-28 overflow-hidden rounded-md border bg-white shadow-2xl">
+                                <div className="flex flex-1 items-center gap-6 truncate">
+                                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-sm">
                                         <Image
                                             src={image.src || '/placeholder.svg'}
                                             alt={`Preview of ${image.name}`}
-                                            fill
+                                            loading="lazy"
+                                            width={40}
+                                            height={40}
                                             className="object-cover"
-                                            sizes="112px"
                                         />
                                     </div>
+                                    <span className="truncate font-medium">{image.name}</span>
                                 </div>
-
-                                <div className="flex-1 truncate font-medium">{image.name}</div>
                                 <div className="text-muted-foreground hidden w-24 flex-shrink-0 text-sm md:block">
                                     {image.size || 0}
                                 </div>

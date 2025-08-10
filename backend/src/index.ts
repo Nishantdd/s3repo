@@ -26,9 +26,7 @@ fastify.register(imageRoutes);
 fastify.setErrorHandler((error, request, reply) => {
     if (error.validation) {
         reply.status(400).send({
-            statusCode: 400,
-            error: 'Bad Request',
-            message: error.message
+            error: error.message
         });
     }
 });

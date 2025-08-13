@@ -1,6 +1,6 @@
 'use client';
 
-import { Share2, Trash2, Download, Layers } from 'lucide-react';
+import { Share2, Trash2, Download, Layers, Loader } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import GroupData from '@/types/groupData';
 import ImageData from '@/types/imageData';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { formatBytes, formatDate, getFileType, parseSizeInBytes } from '@/lib/helpers';
 import { toast } from 'sonner';
 
@@ -20,7 +20,10 @@ interface DetailsPaneProps {
 }
 
 export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, setGroupsData }: DetailsPaneProps) {
+    const [isImageLoading, setIsImageLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => setIsImageLoading(true), [selectedImage]);
 
     if (selectedImage) {
         const handleShare = async () => {
@@ -69,11 +72,18 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                     <SidebarGroup>
                         <SidebarGroupContent className="mt-4 space-y-4 px-4">
                             <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
+                                {isImageLoading && (
+                                    <div className="bg-secondary absolute inset-0 z-10 flex items-center justify-center">
+                                        <Loader className="h-6 w-6 animate-spin" />
+                                    </div>
+                                )}
                                 <Image
                                     src={selectedImage.src || '/placeholder.svg'}
                                     alt={selectedImage.name}
                                     fill
-                                    className="object-cover"
+                                    onLoad={() => setIsImageLoading(false)}
+                                    onError={() => setIsImageLoading(false)}
+                                    className={`object-cover transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                                     draggable="false"
                                 />
                             </div>

@@ -32,7 +32,7 @@ export default function RootLayout({
                     position="bottom-center"
                     offset={'0px'}
                     toastOptions={{
-                        className: '!bg-[background]/80 !backdrop-blur-xs',
+                        className: '!bg-background/80 !backdrop-blur-md',
                         style: {
                             borderBottomLeftRadius: '0px',
                             borderBottomRightRadius: '0px'

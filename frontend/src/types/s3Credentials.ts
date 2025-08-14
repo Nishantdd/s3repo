@@ -3,4 +3,5 @@ export default interface S3Credentials {
     secretAccessKey: string;
     bucketName: string;
     bucketRegion: string;
+    cloudfrontDomainUrl: string;
 }

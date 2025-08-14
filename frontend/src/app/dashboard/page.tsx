@@ -45,7 +45,8 @@ function DashboardContent() {
         accessKey: '',
         bucketName: '',
         bucketRegion: '',
-        secretAccessKey: ''
+        secretAccessKey: '',
+        cloudfrontDomainUrl: ''
     });
 
     const handleGroupSelect = (groupIndex: number) => {

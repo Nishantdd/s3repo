@@ -27,7 +27,8 @@ export default function Account({
         accessKey: false,
         secretAccessKey: false,
         bucketName: false,
-        bucketRegion: false
+        bucketRegion: false,
+        cloudfrontDomainUrl: false
     });
 
     useEffect(() => {
@@ -96,7 +97,7 @@ export default function Account({
             .finally(() => setIsLoggingOut(false));
     };
 
-    const renderCredentialField = (field: keyof S3Credentials, label: string, type = 'text') => {
+    const renderCredentialField = (field: keyof S3Credentials, label: string, placeholder: string, type = 'text') => {
         const isEditing = editStates[field];
         return (
             <div key={field} className="space-y-2">
@@ -106,6 +107,7 @@ export default function Account({
                         id={field}
                         type={isEditing ? type : 'password'}
                         value={currentValues[field]}
+                        placeholder={placeholder}
                         onChange={e => handleInputChange(field, e.target.value)}
                         disabled={!isEditing}
                         className="flex-1 font-mono"
@@ -141,10 +143,11 @@ export default function Account({
 
                 <div className="space-y-6 py-4">
                     <div className="space-y-8">
-                        {renderCredentialField('accessKey', 'Access Key ID')}
-                        {renderCredentialField('secretAccessKey', 'Secret Access Key', 'password')}
-                        {renderCredentialField('bucketName', 'Bucket Name')}
-                        {renderCredentialField('bucketRegion', 'Bucket Region')}
+                        {renderCredentialField('accessKey', 'Access Key ID', 'eg: AKIAIOSFODNN7EXAMPLE')}
+                        {renderCredentialField('secretAccessKey', 'Secret Access Key', 'eg: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY','password')}
+                        {renderCredentialField('bucketName', 'Bucket Name', 'eg: drive-repo')}
+                        {renderCredentialField('bucketRegion', 'Bucket Region', 'eg: ap-south-1')}
+                        {renderCredentialField('cloudfrontDomainUrl', 'Cloudfront Domain URL (optional)', 'eg: https://example.cloudfront.net')}
                     </div>
 
                     <div className="mt-12 flex justify-center">

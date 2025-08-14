@@ -32,6 +32,7 @@ export const auth = betterAuth({
             const accessKey = fullUser?.accessKey || '';
             const bucketName = fullUser?.bucketName || '';
             const bucketRegion = fullUser?.bucketRegion || '';
+            const cloudfrontDomainUrl = fullUser?.cloudfrontDomainUrl || '';
 
             return {
                 user: {
@@ -39,7 +40,8 @@ export const auth = betterAuth({
                     accessKey,
                     decryptedSecretAccessKey,
                     bucketName,
-                    bucketRegion
+                    bucketRegion,
+                    cloudfrontDomainUrl
                 },
                 session
             };

@@ -12,6 +12,7 @@ export const user = pgTable('user', {
     bucketRegion: text('bucket_region'),
     accessKey: text('access_key'),
     secretAccessKey: text('secret_access_key'),
+    cloudfrontDomainUrl: text('cloudfront_domain_url'),
     createdAt: timestamp('created_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
         .notNull(),

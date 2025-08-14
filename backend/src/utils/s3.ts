@@ -84,7 +84,7 @@ export const getCloudfrontImagesUrlFromGroup = async (
     const cdnImagePromises = imageObjects.map(async (obj: _Object) => {
         return {
             id: obj.ETag!.replace(/"/g, ''), // Use the object's ETag as a unique ID
-            src: `${config.CLOUDFRONT_DOMAIN_URL}/${obj.Key}`,
+            src: `${credentials.cloudfrontDomainUrl}/${obj.Key}`,
             name: obj.Key!.split('/').pop()!,
             size: formatBytes(obj.Size!),
             created: obj.LastModified!.toISOString(),

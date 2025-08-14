@@ -7,7 +7,6 @@ const EnvSchema = v.object({
     BETTER_AUTH_SECRET: v.string(),
     BETTER_AUTH_URL: v.string(),
     DATABASE_URL: v.string(),
-    CLOUDFRONT_DOMAIN_URL: v.string(),
     CLIENT_ORIGIN: v.string(),
     NODE_ENV: v.string(),
     PORT: v.pipe(

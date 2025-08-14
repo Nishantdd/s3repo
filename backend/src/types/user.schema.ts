@@ -4,7 +4,8 @@ const S3CredentialsSchema = Type.Object({
     accessKey: Type.String({ minLength: 1 }),
     secretAccessKey: Type.String({ minLength: 1 }),
     bucketName: Type.String({ minLength: 1 }),
-    bucketRegion: Type.String({ minLength: 1 })
+    bucketRegion: Type.String({ minLength: 1 }),
+    cloudfrontDomainUrl: Type.String()
 });
 
 export const fileUploadValidation = {

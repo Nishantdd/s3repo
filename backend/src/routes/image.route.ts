@@ -26,17 +26,18 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
             });
             if (!session?.user) return reply.status(401).send({ error: 'User not authenticated' });
 
-            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey, cloudfrontDomainUrl } = session.user;
 
             // Ensure user has configured their S3 credentials
-            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey)
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey || !cloudfrontDomainUrl)
                 return reply.status(400).send({ error: 'S3 credentials are not configured.' });
 
             const credentials: S3Credentials = {
                 bucketName,
                 bucketRegion,
                 accessKey,
-                secretAccessKey: decryptedSecretAccessKey
+                secretAccessKey: decryptedSecretAccessKey,
+                cloudfrontDomainUrl: cloudfrontDomainUrl
             };
 
             try {
@@ -74,17 +75,19 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
                 return reply.status(401).send({ error: 'User not authenticated' });
             }
 
-            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey, cloudfrontDomainUrl } = session.user;
 
             // Validate credentials
-            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey) {
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey || !cloudfrontDomainUrl) {
                 return reply.status(400).send({ error: 'S3 credentials are not configured.' });
             }
+
             const credentials: S3Credentials = {
                 bucketName,
                 bucketRegion,
                 accessKey,
-                secretAccessKey: decryptedSecretAccessKey
+                secretAccessKey: decryptedSecretAccessKey,
+                cloudfrontDomainUrl: cloudfrontDomainUrl
             };
 
             try {
@@ -113,16 +116,19 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
                 return reply.status(401).send({ error: 'User not authenticated' });
             }
 
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey, cloudfrontDomainUrl } = session.user;
+
             // Validate credentials
-            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
-            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey) {
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey || !cloudfrontDomainUrl) {
                 return reply.status(400).send({ error: 'S3 credentials are not configured.' });
             }
+
             const credentials: S3Credentials = {
                 bucketName,
                 bucketRegion,
                 accessKey,
-                secretAccessKey: decryptedSecretAccessKey
+                secretAccessKey: decryptedSecretAccessKey,
+                cloudfrontDomainUrl: cloudfrontDomainUrl
             };
 
             // Get file metadata from request body
@@ -159,17 +165,19 @@ const imageRoutes: FastifyPluginAsyncTypebox = async fastify => {
                 return reply.status(401).send({ error: 'User not authenticated' });
             }
 
-            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey } = session.user;
+            const { bucketName, bucketRegion, accessKey, decryptedSecretAccessKey, cloudfrontDomainUrl } = session.user;
 
             // Validate credentials
-            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey) {
+            if (!bucketName || !bucketRegion || !accessKey || !decryptedSecretAccessKey || !cloudfrontDomainUrl) {
                 return reply.status(400).send({ error: 'S3 credentials are not configured.' });
             }
+
             const credentials: S3Credentials = {
                 bucketName,
                 bucketRegion,
                 accessKey,
-                secretAccessKey: decryptedSecretAccessKey
+                secretAccessKey: decryptedSecretAccessKey,
+                cloudfrontDomainUrl: cloudfrontDomainUrl
             };
 
             const isDeleted = await deleteImageFromFolder(credentials, body.groupName, body.imageName);

@@ -1,4 +1,4 @@
-import { fileUploadValidation, updateS3CredentialsValidation } from '../types/user.schema.js';
+import { fileUploadValidation, S3Credentials, updateS3CredentialsValidation } from '../types/user.schema.js';
 import { auth } from '../utils/auth.js';
 import { db } from '../db/drizzle.js';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
@@ -20,11 +20,12 @@ const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
             if (!session) return reply.status(401).send({ error: 'User not authenticated' });
 
             // Get s3 credentials from user session
-            const result = {
+            const result: S3Credentials = {
                 bucketName: session.user.bucketName,
                 bucketRegion: session.user.bucketRegion,
                 accessKey: session.user.accessKey,
-                secretAccessKey: session.user.decryptedSecretAccessKey
+                secretAccessKey: session.user.decryptedSecretAccessKey,
+                cloudfrontDomainUrl: session.user.cloudfrontDomainUrl
             };
             reply.status(200).send({ message: 'S3 credentials fetched successfully', data: result });
         }
@@ -53,6 +54,7 @@ const userRoutes: FastifyPluginAsyncTypebox = async fastify => {
                         bucketRegion: body.bucketRegion,
                         accessKey: body.accessKey,
                         secretAccessKey: body.secretAccessKey,
+                        cloudfrontDomainUrl: body.cloudfrontDomainUrl,
                         updatedAt: new Date()
                     })
                     .where(eq(user.id, userId))

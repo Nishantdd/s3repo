@@ -191,6 +191,10 @@
         -ms-user-select: none;
         user-select: none;
     }
+    ::selection {
+        background-color: var(--color-foreground);
+        color: var(--color-background);
+    }
     input,
     textarea,
     p,

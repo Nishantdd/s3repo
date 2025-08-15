@@ -4,7 +4,8 @@ import {
     ListObjectsV2Command,
     GetObjectCommand,
     _Object,
-    DeleteObjectCommand
+    DeleteObjectCommand,
+    ListObjectsV2CommandOutput
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Credentials } from '../types/user.schema.js';
@@ -54,7 +55,7 @@ export const listGroupsInBucket = async (credentials: S3Credentials): Promise<st
         Delimiter: '/'
     });
 
-    const response = await s3Client.send(command);
+    const response: ListObjectsV2CommandOutput = await s3Client.send(command);
     // Extracts the folder names from the CommonPrefixes array and removes the trailing '/'
     return response.CommonPrefixes?.map(prefix => prefix.Prefix!.slice(0, -1)) || [];
 };
@@ -79,7 +80,11 @@ export const getCloudfrontImagesUrlFromGroup = async (
     if (!Contents) return [];
 
     // Filter out the folder placeholder object itself, which has a size of 0.
-    const imageObjects = Contents.filter(obj => obj.Size && obj.Size > 0);
+    const validImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.svg', '.avif'];
+    const imageObjects = Contents.filter(obj => {
+        const key = obj.Key?.toLowerCase() || '';
+        return obj.Size && obj.Size > 0 && validImageExtensions.some(ext => key.endsWith(ext));
+    });
 
     const cdnImagePromises = imageObjects.map(async (obj: _Object) => {
         return {

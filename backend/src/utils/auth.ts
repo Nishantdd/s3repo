@@ -6,6 +6,8 @@ import { schema } from '../db/schema.js';
 import { config } from './config.js';
 
 export const auth = betterAuth({
+    baseURL: config.BETTER_AUTH_URL,
+    secret: config.BETTER_AUTH_SECRET,
     trustedOrigins: [config.CLIENT_ORIGIN],
     advanced: {
         useSecureCookies: config.NODE_ENV === 'production',

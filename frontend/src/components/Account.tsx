@@ -144,10 +144,19 @@ export default function Account({
                 <div className="space-y-6 py-4">
                     <div className="space-y-8">
                         {renderCredentialField('accessKey', 'Access Key ID', 'eg: AKIAIOSFODNN7EXAMPLE')}
-                        {renderCredentialField('secretAccessKey', 'Secret Access Key', 'eg: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY','password')}
+                        {renderCredentialField(
+                            'secretAccessKey',
+                            'Secret Access Key',
+                            'eg: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+                            'password'
+                        )}
                         {renderCredentialField('bucketName', 'Bucket Name', 'eg: drive-repo')}
                         {renderCredentialField('bucketRegion', 'Bucket Region', 'eg: ap-south-1')}
-                        {renderCredentialField('cloudfrontDomainUrl', 'Cloudfront Domain URL (optional)', 'eg: https://example.cloudfront.net')}
+                        {renderCredentialField(
+                            'cloudfrontDomainUrl',
+                            'Cloudfront Domain URL (optional)',
+                            'eg: https://example.cloudfront.net'
+                        )}
                     </div>
 
                     <div className="mt-12 flex justify-center">

@@ -1,6 +1,6 @@
 'use client';
 
-import { Share2, Trash2, Download, Layers, Loader } from 'lucide-react';
+import { Share2, Trash2, Download, Layers, Loader2 } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -74,7 +74,7 @@ export function DetailsPane({ selectedImage, selectedGroup, setSelectedImage, se
                             <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
                                 {isImageLoading && (
                                     <div className="bg-secondary absolute inset-0 z-10 flex items-center justify-center">
-                                        <Loader className="h-6 w-6 animate-spin" />
+                                        <Loader2 className="h-6 w-6 animate-spin" />
                                     </div>
                                 )}
                                 <Image

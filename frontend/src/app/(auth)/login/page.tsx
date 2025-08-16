@@ -2,7 +2,6 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +11,7 @@ import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-export default function Login({ className, ...props }: React.ComponentProps<'div'>) {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -46,7 +45,7 @@ export default function Login({ className, ...props }: React.ComponentProps<'div
     };
 
     return (
-        <div className={cn('bg-background flex min-h-screen items-center justify-center px-4', className)} {...props}>
+        <div className="bg-background flex min-h-screen items-center justify-center px-4">
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login to your account</CardTitle>

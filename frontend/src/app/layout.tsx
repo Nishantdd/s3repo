@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/sonner';
 
 const adwaitaSans = localFont({
     src: '../../public/AdwaitaSans-Regular.ttf',
-    variable: '--font-inter-sans'
+    variable: '--font-adwaita-sans'
 });
 
 const geistMono = Geist_Mono({
@@ -25,14 +25,14 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body className={`${adwaitaSans.className} ${adwaitaSans.variable} ${geistMono.variable} antialiased`}>
+        <html lang="en" className={`${adwaitaSans.className} ${adwaitaSans.variable} ${geistMono.variable}`}>
+            <body className="antialiased">
                 {children}
                 <Toaster
                     position="bottom-center"
                     offset={'0px'}
                     toastOptions={{
-                        className: '!bg-background/80 !backdrop-blur-md',
+                        className: '!bg-background/80 !backdrop-blur-md !font-sans',
                         style: {
                             borderBottomLeftRadius: '0px',
                             borderBottomRightRadius: '0px'

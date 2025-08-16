@@ -66,8 +66,6 @@ function DashboardContent() {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                cache: 'force-cache',
-                next: { revalidate: 600 }
             })
                 .then(res => res.json())
                 .then(res => {

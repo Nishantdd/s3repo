@@ -57,7 +57,7 @@ export function ImageGallery({
         <>
             {!allDone && (
                 <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
-                    <div className="text-foreground text-sm font-medium">Getting your images</div>
+                    <div className="text-foreground text-md">Getting your images</div>
                     <div className="w-64">
                         <div className="bg-muted h-2 w-full rounded-full">
                             <div

@@ -30,7 +30,8 @@ export default function RootLayout({
                 {children}
                 <Toaster
                     position="bottom-center"
-                    offset={'0px'}
+                    offset='0px'
+                    mobileOffset='0px'
                     toastOptions={{
                         className: '!bg-background/80 !backdrop-blur-md !font-sans',
                         style: {

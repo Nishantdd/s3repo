@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatBytes } from '@/lib/helpers';
 import GroupData from '@/types/groupData';
 import { CheckCircle2, File, Folder, UploadCloud, X, XCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface UploaderProps {
     isUploaderOpen: boolean;
@@ -39,6 +40,7 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
     const [groupName, setGroupName] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [startTime, setStartTime] = useState<number | null>(null);
+    const [isDragActive, setIsDragActive] = useState(false);
 
     useEffect(() => {
         if (uploadMode === 'file') {
@@ -71,6 +73,62 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
             isComplete: completedFiles + files.filter(f => f.status === 'failed').length === totalFiles
         };
     }, [files, isUploading, startTime]);
+
+    const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragActive(false);
+
+        const items = Array.from(event.dataTransfer.items);
+        const files = items.filter(item => item.webkitGetAsEntry()?.isFile);
+        const folders = items.filter(item => item.webkitGetAsEntry()?.isDirectory);
+
+        if (files.length !== 0) {
+            setFiles(files.map(file => ({ file: file.getAsFile()!, progress: 0, status: 'pending' })));
+        } else if (folders.length != 0) {
+            const firstDirEntry = folders[0].webkitGetAsEntry() as FileSystemDirectoryEntry;
+            if (!firstDirEntry) return;
+
+            const reader = firstDirEntry.createReader();
+            reader.readEntries(entries => {
+                const fileEntries = entries.filter(e => e.isFile) as FileSystemFileEntry[];
+                const filePromises: Promise<File>[] = fileEntries.map(
+                    fileEntry =>
+                        new Promise((resolve, reject) => {
+                            fileEntry.file(
+                                file => resolve(file),
+                                err => reject(err)
+                            );
+                        })
+                );
+
+                Promise.all(filePromises)
+                    .then(fileList => {
+                        setFiles(
+                            fileList.map(file => ({
+                                file,
+                                progress: 0,
+                                status: 'pending'
+                            }))
+                        );
+                    })
+                    .catch(err => {
+                        toast.error(`Error reading files from folder: ${err}`);
+                    });
+            });
+        } else {
+            toast.info('No images found in dropped object');
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragActive(true);
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragActive(false);
+    };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(event.target.files || []);
@@ -177,6 +235,7 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
         setStartTime(Date.now());
 
         await Promise.allSettled(files.map(fileState => uploadFile(fileState, groupName)));
+        toast.success('Uploads completed successfully');
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/images`, { credentials: 'include' });
@@ -239,7 +298,12 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
     );
 
     const renderFileDropzone = (mode: 'file' | 'folder') => (
-        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-10 text-center">
+        <div
+            className={`flex flex-col items-center justify-center rounded-lg border-2 p-10 text-center transition-colors ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-muted-foreground border-dashed'}`}
+            onDragEnter={handleDragOver}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleFileDrop}>
             {mode === 'file' ? (
                 <File className="text-muted-foreground h-12 w-12" />
             ) : (

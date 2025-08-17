@@ -65,7 +65,7 @@ function DashboardContent() {
             await fetch(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/get-s3-credentials`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                credentials: 'include'
             })
                 .then(res => res.json())
                 .then(res => {

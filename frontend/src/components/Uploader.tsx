@@ -243,7 +243,7 @@ export function Uploader({ isUploaderOpen, setIsUploaderOpen, setGroupsData, sel
             const updatedData = await res.json();
             setGroupsData(updatedData.data);
         } catch (error) {
-            console.error(error);
+            toast.error(`Error while getting updated data: ${error}`);
         }
     };
 

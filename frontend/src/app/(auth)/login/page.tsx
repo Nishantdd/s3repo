@@ -43,7 +43,7 @@ export default function Login() {
     const handleGoogleLogin = () => {
         toast.info('Google login is not implemented yet.');
     };
-    
+
     const { data: session, isPending, error } = authClient.useSession();
     if (isPending) return;
     if (session && !error) return redirect('/dashboard');

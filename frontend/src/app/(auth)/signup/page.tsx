@@ -52,7 +52,7 @@ export default function Signup() {
             }
         );
     };
-    
+
     const { data: session, isPending, error } = authClient.useSession();
     if (isPending) return;
     if (session && !error) return redirect('/dashboard');

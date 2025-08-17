@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -52,6 +52,10 @@ export default function Signup() {
             }
         );
     };
+    
+    const { data: session, isPending, error } = authClient.useSession();
+    if (isPending) return;
+    if (session && !error) return redirect('/dashboard');
 
     return (
         <div className="bg-background flex min-h-screen items-center justify-center px-4">

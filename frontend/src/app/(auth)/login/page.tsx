@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Loader } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -43,6 +43,10 @@ export default function Login() {
     const handleGoogleLogin = () => {
         toast.info('Google login is not implemented yet.');
     };
+    
+    const { data: session, isPending, error } = authClient.useSession();
+    if (isPending) return;
+    if (session && !error) return redirect('/dashboard');
 
     return (
         <div className="bg-background flex min-h-screen items-center justify-center px-4">

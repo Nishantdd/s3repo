@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DetailsPane } from '@/components/DetailsPane';
 import { Navbar } from '@/components/Navbar';
@@ -16,7 +16,7 @@ import { Uploader } from '@/components/Uploader';
 import { toast } from 'sonner';
 import { ViewMode } from '@/types/viewMode';
 
-function DashboardContent() {
+export default function DashboardContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -168,13 +168,5 @@ function DashboardContent() {
                 )}
             </SidebarProvider>
         </div>
-    );
-}
-
-export default function Dashboard() {
-    return (
-        <Suspense fallback={<Loading />}>
-            <DashboardContent />
-        </Suspense>
     );
 }

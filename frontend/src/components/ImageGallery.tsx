@@ -202,7 +202,7 @@ export function ImageGallery({
                                     href={downloadHref}
                                     onClick={e => e.stopPropagation()}
                                     className={cn(
-                                        'absolute top-2 right-2 inline-flex items-center justify-center rounded-md bg-white/60 p-1 text-black backdrop-blur-2xl',
+                                        'absolute top-2 right-2 hidden items-center justify-center rounded-md bg-white/60 p-1 text-black backdrop-blur-2xl md:inline-flex',
                                         'translate-x-2 -translate-y-2 scale-75 opacity-0',
                                         'transition-all duration-200 ease-out',
                                         'group-hover:translate-x-0 group-hover:-translate-y-0 group-hover:scale-100 group-hover:opacity-100',

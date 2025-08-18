@@ -11,7 +11,7 @@ import { Loader } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
 
-export default function Signup() {
+function SignupContent() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -52,10 +52,6 @@ export default function Signup() {
             }
         );
     };
-
-    const { data: session, isPending, error } = authClient.useSession();
-    if (isPending) return;
-    if (session && !error) return redirect('/dashboard');
 
     return (
         <div className="bg-background flex min-h-screen items-center justify-center px-4">
@@ -126,4 +122,11 @@ export default function Signup() {
             </Card>
         </div>
     );
+}
+
+export default function Signup() {
+    const { data: session, isPending, error } = authClient.useSession();
+    if (isPending) return;
+    if (session && !error) return redirect('/dashboard');
+    return <SignupContent />;
 }

@@ -16,7 +16,7 @@ import { Uploader } from '@/components/Uploader';
 import { toast } from 'sonner';
 import { ViewMode } from '@/types/viewMode';
 
-export default function DashboardContent() {
+function DashboardContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -108,9 +108,7 @@ export default function DashboardContent() {
         fetchS3Credentials();
     }, []);
 
-    const { data: session, isPending, error } = authClient.useSession();
-    if (isPending || isLoading) return <Loading />;
-    if (!session || error) return redirect('/login');
+    if (isLoading) return <Loading />;
 
     return (
         <div className="[--header-height:calc(--spacing(14))]">
@@ -169,4 +167,11 @@ export default function DashboardContent() {
             </SidebarProvider>
         </div>
     );
+}
+
+export default function Dashboard() {
+    const { data: session, isPending, error } = authClient.useSession();
+    if (isPending) return <Loading />;
+    if (!session || error) return redirect('/login');
+    return <DashboardContent />;
 }

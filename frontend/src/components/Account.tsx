@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { RotateCcw, Edit, Save, LogOut, Loader } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
 import S3Credentials from '@/types/s3Credentials';
 import { toast } from 'sonner';
 
@@ -86,15 +85,7 @@ export default function Account({
     const handleLogout = async (e: React.FormEvent) => {
         setIsLoggingOut(true);
         e.preventDefault();
-        await authClient
-            .signOut({
-                fetchOptions: {
-                    onSuccess: () => {
-                        redirect('/login');
-                    }
-                }
-            })
-            .finally(() => setIsLoggingOut(false));
+        await authClient.signOut().finally(() => setIsLoggingOut(false));
     };
 
     const renderCredentialField = (field: keyof S3Credentials, label: string, placeholder: string, type = 'text') => {

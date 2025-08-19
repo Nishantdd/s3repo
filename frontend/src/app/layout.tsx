@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { cookies } from 'next/headers';
 
 const adwaitaSans = localFont({
     src: '../../public/AdwaitaSans-Regular.ttf',
@@ -19,13 +20,17 @@ export const metadata: Metadata = {
     description: 'An S3 wrapper repository for storing images'
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const cookieStore = await cookies();
+    const theme = cookieStore.get('theme');
     return (
-        <html lang="en" className={`${adwaitaSans.className} ${adwaitaSans.variable} ${geistMono.variable}`}>
+        <html
+            lang="en"
+            className={`${adwaitaSans.className} ${adwaitaSans.variable} ${geistMono.variable} ${theme?.value}`}>
             <body className="antialiased">
                 {children}
                 <Toaster

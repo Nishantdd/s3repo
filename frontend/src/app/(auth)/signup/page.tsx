@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,11 +12,12 @@ import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
 
 function SignupContent() {
-    const [email, setEmail] = useState('');
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const [email, setEmail] = useState<string>(() => searchParams.get('email') || '');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const router = useRouter();
 
     const handleLoginRedirect = () => router.push('/login');
 

@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
     return (
@@ -42,13 +43,13 @@ export default function Home() {
 
                 <div className="md:bg-muted flex w-full items-center justify-between px-8 py-4">
                     <div className="text-muted-foreground text-xs">
-                        <a href="/dashboard" className="text-muted-foreground hover:text-foreground hover:underline">
+                        <Link href="/dashboard" className="text-muted-foreground hover:text-foreground hover:underline">
                             Dashboard
-                        </a>
+                        </Link>
                         <span className="text-muted-foreground/40 px-2 font-bold">/</span>
-                        <a href="guides" className="text-muted-foreground hover:text-foreground hover:underline">
+                        <Link href="guides" className="text-muted-foreground hover:text-foreground hover:underline">
                             Guides
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="flex text-xs">

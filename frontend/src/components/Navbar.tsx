@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { GroupSelector } from './GroupSelector';
 import { Dispatch, SetStateAction } from 'react';
 import GroupData from '@/types/groupData';
+import Link from 'next/link';
 
 interface NavbarProps {
     groups: string[];
@@ -18,7 +19,7 @@ export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, selectedGr
     return (
         <nav className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b grayscale backdrop-blur">
             <div className="flex h-14 items-center justify-between px-4">
-                <div className="hidden items-center justify-center gap-1 md:flex">
+                <Link href="/" className="hidden items-center justify-center gap-1 md:flex">
                     <Image
                         src="/s3repo.svg"
                         className="dark:invert"
@@ -28,7 +29,7 @@ export function Navbar({ setIsAccountOpen, setIsUploaderOpen, groups, selectedGr
                         alt="Logo"
                     />
                     <h1 className="text-lg font-semibold">S3Repo</h1>
-                </div>
+                </Link>
 
                 <GroupSelector selectedGroup={selectedGroup} groups={groups} onGroupSelect={onGroupSelect} />
 

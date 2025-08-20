@@ -2,12 +2,12 @@
 
 import type React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { CheckCircle, Circle, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { TableOfContentsItem } from '@/types/tableOfContents';
+import { Progress } from './ui/progress';
 
 interface GuidePageLayoutProps {
     title: string;
@@ -31,37 +31,34 @@ export default function GuidePageLayout({
     nextGuide
 }: GuidePageLayoutProps) {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [activeSection, setActiveSection] = useState<string>('');
     const [readSections, setReadSections] = useState<Set<string>>(new Set());
-    const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
-    const [readingProgress, setReadingProgress] = useState(0);
+    const [readingProgress, setReadingProgress] = useState<number>(0);
 
     useEffect(() => {
         const mainContent = scrollContainerRef.current;
-        if (!mainContent) return;
+        if (!mainContent || tableOfContents.length === 0) return;
+
+        const { scrollTop } = mainContent;
+        const sectionElements = tableOfContents
+            .map(item => document.getElementById(item.id))
+            .filter(Boolean) as HTMLElement[];
 
         const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = mainContent;
-            const docHeight = scrollHeight - clientHeight;
-            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            setReadingProgress(Math.min(progress, 100));
-
-            const sections = tableOfContents.map(item => document.getElementById(item.id)).filter(Boolean);
-            let currentActiveSection = '';
+            let activeIndex = 0;
             const newReadSections = new Set<string>();
 
-            for (const section of sections) {
-                const sectionTop = section?.offsetTop;
-                if (sectionTop && sectionTop <= scrollTop + 150) {
-                    currentActiveSection = section?.id;
+            for (const section of sectionElements) {
+                if (section.offsetTop <= scrollTop + 350) {
+                    activeIndex++;
                     newReadSections.add(section.id);
                 } else {
                     break;
                 }
             }
 
-            setActiveSection(currentActiveSection);
             setReadSections(newReadSections);
+            const progress = ((activeIndex + 1) / tableOfContents.length) * 100;
+            setReadingProgress(progress);
         };
 
         mainContent.addEventListener('scroll', handleScroll);
@@ -70,23 +67,9 @@ export default function GuidePageLayout({
         return () => mainContent.removeEventListener('scroll', handleScroll);
     }, [tableOfContents]);
 
-    const toggleSectionComplete = (sectionId: string) => {
-        setCompletedSections(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(sectionId)) {
-                newSet.delete(sectionId);
-            } else {
-                newSet.add(sectionId);
-            }
-            return newSet;
-        });
-    };
-
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     const getDifficultyColor = (level: string) => {
@@ -157,60 +140,36 @@ export default function GuidePageLayout({
                 </div>
             </div>
 
-            <aside className="border-border bg-card/30 hidden h-screen w-80 flex-col border-l lg:flex">
-                <div className="overflow-y-auto p-6">
-                    <div className="mb-8">
-                        <div className="mb-2 flex items-center justify-between">
-                            <h3 className="text-sm font-semibold">Reading Progress</h3>
-                            <span className="text-muted-foreground text-xs">{Math.round(readingProgress)}%</span>
+            {tableOfContents.length > 0 && (
+                <aside className="border-border hidden h-screen w-72 flex-col border-l py-12 lg:flex">
+                    <div className="overflow-y-auto px-6">
+                        <div className="mb-8">
+                            <div className="mb-2 flex items-center justify-between">
+                                <h3 className="text-sm font-semibold">Reading Progress</h3>
+                                <span className="text-muted-foreground text-xs">{Math.round(readingProgress)}%</span>
+                            </div>
+                            <Progress value={readingProgress} className="h-2" />
                         </div>
-                        <Progress value={readingProgress} className="h-2" />
-                    </div>
-
-                    <div className="mb-8">
-                        <h3 className="mb-4 text-sm font-semibold">Table of Contents</h3>
-                        <nav className="flex flex-col gap-1">
+                        <h3 className="text-foreground mb-4 text-sm font-semibold">On this page</h3>
+                        <nav className="flex flex-col">
                             {tableOfContents.map(item => (
-                                <div key={item.id} className="group flex items-center gap-2">
-                                    <button
-                                        onClick={() => toggleSectionComplete(item.id)}
-                                        className="text-muted-foreground hover:text-foreground flex-shrink-0 transition-colors">
-                                        {completedSections.has(item.id) ? (
-                                            <CheckCircle className="h-4 w-4 text-green-600" />
-                                        ) : (
-                                            <Circle className="h-4 w-4" />
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => scrollToSection(item.id)}
-                                        className={cn(
-                                            'flex-1 rounded-md border-l-2 border-transparent px-2 py-1 text-left text-sm transition-colors',
-                                            item.level > 1 && 'pl-6',
-                                            activeSection === item.id
-                                                ? 'border-primary bg-primary/10 text-primary font-medium'
-                                                : readSections.has(item.id)
-                                                  ? 'text-foreground/80 hover:bg-accent'
-                                                  : 'text-muted-foreground hover:bg-accent'
-                                        )}>
-                                        {item.title}
-                                    </button>
-                                </div>
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollToSection(item.id)}
+                                    className={cn(
+                                        'w-full border-l-2 py-1.5 text-left text-sm transition-colors',
+                                        item.level > 1 ? 'pl-10' : 'pl-3',
+                                        readSections.has(item.id)
+                                            ? 'border-primary text-primary'
+                                            : 'text-muted-foreground hover:text-foreground border-transparent'
+                                    )}>
+                                    {item.title}
+                                </button>
                             ))}
                         </nav>
                     </div>
-
-                    <div className="bg-muted/50 rounded-lg p-4">
-                        <h4 className="mb-2 text-sm font-medium">Your Progress</h4>
-                        <div className="text-muted-foreground text-xs">
-                            {completedSections.size} of {tableOfContents.length} sections completed
-                        </div>
-                        <Progress
-                            value={(completedSections.size / tableOfContents.length) * 100}
-                            className="mt-2 h-1"
-                        />
-                    </div>
-                </div>
-            </aside>
+                </aside>
+            )}
         </div>
     );
 }

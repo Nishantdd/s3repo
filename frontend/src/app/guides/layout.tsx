@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronDown, FileText } from 'lucide-react';
@@ -9,11 +9,19 @@ import Image from 'next/image';
 import { guidesData } from '@/data/guidesData';
 
 export default function GuidesLayout({ children }: { children: React.ReactNode }) {
-    const [expandedSections, setExpandedSections] = useState<string[]>(['getting-started']);
     const pathname = usePathname();
+    const [expandedSection, setExpandedSection] = useState<string>('');
 
-    const toggleSection = (slug: string) => {
-        setExpandedSections(prev => (prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug]));
+    useEffect(() => {
+        const pathSlugs = pathname.split('/');
+        setExpandedSection(prev => {
+            if (pathname.length < 3) return prev;
+            return pathSlugs[2];
+        });
+    }, [pathname]);
+
+    const handleToggle = (slug: string) => {
+        setExpandedSection(prev => (prev === slug ? '' : slug));
     };
 
     const isActiveGuide = (categorySlug: string, guideSlug: string) => {
@@ -46,17 +54,17 @@ export default function GuidesLayout({ children }: { children: React.ReactNode }
                             {guidesData.map(section => (
                                 <div key={section.slug} className="space-y-1">
                                     <button
-                                        onClick={() => toggleSection(section.slug)}
+                                        onClick={() => handleToggle(section.slug)}
                                         className="hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-all">
                                         <span>{section.title}</span>
                                         <ChevronDown
                                             className={`h-4 w-4 transition-all ${
-                                                !expandedSections.includes(section.slug) && '-rotate-90'
+                                                expandedSection !== section.slug && '-rotate-90'
                                             }`}
                                         />
                                     </button>
 
-                                    {expandedSections.includes(section.slug) && (
+                                    {expandedSection === section.slug && (
                                         <div className="ml-4 space-y-1">
                                             {section.items.map(item => (
                                                 <Link

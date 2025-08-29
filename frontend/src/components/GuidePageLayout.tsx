@@ -111,30 +111,34 @@ export default function GuidePageLayout({
 
                         <div className="prose prose-gray dark:prose-invert max-w-none">{children}</div>
 
-                        <nav className="border-border mt-16 flex items-center justify-between border-t pt-8">
-                            {previousGuide ? (
-                                <Link href={previousGuide.href}>
-                                    <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-                                        <ArrowLeft className="h-4 w-4" />
-                                        <div className="text-left">
-                                            <div className="font-medium">{previousGuide.title}</div>
-                                        </div>
-                                    </Button>
-                                </Link>
-                            ) : (
-                                <div />
-                            )}
+                        <nav className="border-border mt-16 border-t pt-8">
+                            <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-between">
+                                {previousGuide ? (
+                                    <Link href={previousGuide.href} className="block w-full md:w-auto">
+                                        <Button
+                                            variant="outline"
+                                            className="flex w-full items-center justify-start gap-2 md:w-auto">
+                                            <ArrowLeft className="h-4 w-4" />
+                                            <div className="text-left">
+                                                <div className="font-medium">{previousGuide.title}</div>
+                                            </div>
+                                        </Button>
+                                    </Link>
+                                ) : (
+                                    <div className="w-full md:w-auto" />
+                                )}
 
-                            {nextGuide && (
-                                <Link href={nextGuide.href}>
-                                    <Button className="flex items-center gap-2">
-                                        <div className="text-right">
-                                            <div className="font-medium">{nextGuide.title}</div>
-                                        </div>
-                                        <ArrowRight className="h-4 w-4" />
-                                    </Button>
-                                </Link>
-                            )}
+                                {nextGuide && (
+                                    <Link href={nextGuide.href} className="block w-full md:w-auto">
+                                        <Button className="flex w-full items-center justify-end gap-2 md:w-auto">
+                                            <div className="text-right">
+                                                <div className="font-medium">{nextGuide.title}</div>
+                                            </div>
+                                            <ArrowRight className="h-4 w-4" />
+                                        </Button>
+                                    </Link>
+                                )}
+                            </div>
                         </nav>
                     </article>
                 </div>

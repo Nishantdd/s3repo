@@ -19,7 +19,7 @@ export const featuredGuides: featuredGuide[] = [
     {
         title: 'IAM Basics',
         description: 'Understand AWS Identity and Access Management fundamentals for security.',
-        href: '/guides/getting-started/iam-basics',
+        href: '/guides/iam/iam-intro',
         icon: Shield,
         category: 'Security'
     },

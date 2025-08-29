@@ -45,7 +45,7 @@ export default function GuidesHomePage() {
                     If you want to just learn how to setup credentials for S3Repo and not go through AWS Tutorials, you
                     can read the account setup.
                 </p>
-                <Link href="/guides/getting-started/account-setup">
+                <Link href="/guides/s3repo/set-credentials">
                     <Button>
                         Setup Credentials
                         <ArrowUpRight className="h-4 w-4" />

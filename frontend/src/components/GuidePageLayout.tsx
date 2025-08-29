@@ -38,17 +38,17 @@ export default function GuidePageLayout({
         const mainContent = scrollContainerRef.current;
         if (!mainContent || tableOfContents.length === 0) return;
 
-        const { scrollTop } = mainContent;
         const sectionElements = tableOfContents
             .map(item => document.getElementById(item.id))
             .filter(Boolean) as HTMLElement[];
 
         const handleScroll = () => {
+            const { scrollTop } = mainContent;
             let activeIndex = 0;
             const newReadSections = new Set<string>();
 
             for (const section of sectionElements) {
-                if (section.offsetTop <= scrollTop + 350) {
+                if (section.offsetTop <= scrollTop + 550) {
                     activeIndex++;
                     newReadSections.add(section.id);
                 } else {
@@ -57,7 +57,7 @@ export default function GuidePageLayout({
             }
 
             setReadSections(newReadSections);
-            const progress = ((activeIndex + 1) / tableOfContents.length) * 100;
+            const progress = (activeIndex / tableOfContents.length) * 100;
             setReadingProgress(progress);
         };
 
